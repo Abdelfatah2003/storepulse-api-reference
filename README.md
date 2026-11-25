@@ -35,7 +35,8 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - Grid of cards and a real `<table>` with `caption`, `thead` and `th scope`, sharing the same data and pagination.
 - Product detail, edit, delete confirmation, favourites, cart, checkout and login.
 - Three switchable themes: **Light**, **Dark** and **Sunrise**.
-- English / Arabic / Both switcher inherited from `api.html`.
+- English / Arabic / Both switcher inherited from `api.html`; the first visit starts in single-language Arabic (`dir="rtl"`), while **Both** remains available as a learning aid.
+- Compact toolbar: search, category, view and clear stay visible; `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
 - Loading, error and empty states with retry; clear feedback through a live-region toast.
 
 ## Debounce

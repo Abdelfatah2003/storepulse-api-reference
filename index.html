@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light" data-lang="both">
+<html lang="ar" dir="rtl" data-theme="light" data-lang="ar">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,9 +56,9 @@
         <!-- From api.html: bilingual switcher kept as a learning aid. -->
         <fieldset class="lang-switch">
           <legend class="sr-only">Language • اللغة</legend>
-          <input type="radio" name="site-lang" id="lang-both" value="both" checked>
+          <input type="radio" name="site-lang" id="lang-both" value="both">
           <label for="lang-both"><span class="lang-full">EN+ع</span><span class="lang-short" aria-hidden="true">Both</span></label>
-          <input type="radio" name="site-lang" id="lang-ar" value="ar">
+          <input type="radio" name="site-lang" id="lang-ar" value="ar" checked>
           <label for="lang-ar"><span class="lang-full">ع</span><span class="lang-short" aria-hidden="true">AR</span></label>
           <input type="radio" name="site-lang" id="lang-en" value="en">
           <label for="lang-en"><span class="lang-full">EN</span><span class="lang-short" aria-hidden="true">EN</span></label>
@@ -70,14 +70,28 @@
   <!-- PDF 1.2: the one main landmark. -->
   <main id="main-content" class="page-main" tabindex="-1">
     <section class="hero" aria-labelledby="page-title">
-      <h1 id="page-title"><span class="bi-en" lang="en">Shop smarter with StorePulse</span><span class="bi-ar" lang="ar" dir="rtl">تسوّق بذكاء مع StorePulse</span></h1>
-      <p class="hero-lead">
-        <span class="bi-en" lang="en">Products, prices and categories come straight from FakeStoreAPI. Every request is visible in your browser's Network tab.</span>
-        <span class="bi-ar" lang="ar" dir="rtl">المنتجات والأسعار والتصنيفات تأتي مباشرة من FakeStoreAPI. كل طلب يظهر في تبويب Network بالمتصفح.</span>
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#catalogue"><span class="bi-en" lang="en">Browse products</span><span class="bi-ar" lang="ar" dir="rtl">تصفح المنتجات</span></a>
-        <a class="btn btn-outline" href="https://fakestoreapi.com/docs" target="_blank" rel="noreferrer"><span class="bi-en" lang="en">API documentation</span><span class="bi-ar" lang="ar" dir="rtl">توثيق الـ API</span></a>
+      <div class="hero-copy">
+        <p class="hero-kicker"><span class="bi-en" lang="en">StorePulse / live storefront</span><span class="bi-ar" lang="ar" dir="rtl">StorePulse / متجر حي</span></p>
+        <h1 id="page-title"><span class="bi-en" lang="en">Shop smarter with StorePulse</span><span class="bi-ar" lang="ar" dir="rtl">تسوّق بذكاء مع StorePulse</span></h1>
+        <p class="hero-lead">
+          <span class="bi-en" lang="en">Live products, prices and categories from FakeStoreAPI. Every request is visible in the Network tab.</span>
+          <span class="bi-ar" lang="ar" dir="rtl">منتجات وأسعار وتصنيفات مباشرة من FakeStoreAPI. كل طلب ظاهر في تبويب Network.</span>
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#catalogue"><span class="bi-en" lang="en">Browse products</span><span class="bi-ar" lang="ar" dir="rtl">تصفح المنتجات</span></a>
+          <a class="btn btn-outline" href="https://fakestoreapi.com/docs" target="_blank" rel="noreferrer"><span class="bi-en" lang="en">API documentation</span><span class="bi-ar" lang="ar" dir="rtl">توثيق الـ API</span></a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <span class="hero-art-ring"></span>
+        <span class="hero-art-card hero-art-card-back"></span>
+        <span class="hero-art-card hero-art-card-front">
+          <span class="hero-art-dot"></span>
+          <span class="hero-art-line"></span>
+          <span class="hero-art-line hero-art-line-short"></span>
+          <span class="hero-art-pulse"></span>
+        </span>
+        <span class="hero-art-tag">LIVE</span>
       </div>
     </section>
 
@@ -88,8 +102,8 @@
           <p class="eyebrow"><span class="bi-en" lang="en">Live catalogue</span><span class="bi-ar" lang="ar" dir="rtl">الكتالوج الحي</span></p>
           <h2 id="catalogue-title"><span class="bi-en" lang="en">Product catalogue</span><span class="bi-ar" lang="ar" dir="rtl">كتالوج المنتجات</span></h2>
           <p class="section-note">
-            <span class="bi-en" lang="en">Server parameters (category path, <code>?limit=</code>, <code>?sort=</code>) go to the API; typing is filtered in the browser after a short debounce.</span>
-            <span class="bi-ar" lang="ar" dir="rtl">معاملات السيرفر (مسار التصنيف و<code>?limit=</code> و<code>?sort=</code>) تُرسل إلى الـ API؛ والكتابة تُفلتر في المتصفح بعد تأخير قصير.</span>
+            <span class="bi-en" lang="en">Browse server-backed products, then search and sort locally.</span>
+            <span class="bi-ar" lang="ar" dir="rtl">تصفح منتجات تأتي من السيرفر، ثم ابحث ورتّب محلياً.</span>
           </p>
         </div>
         <button class="btn btn-primary" id="add-product-button" type="button"><span class="bi-en" lang="en">Add product</span><span class="bi-ar" lang="ar" dir="rtl">أضف منتجًا</span></button>
@@ -97,64 +111,74 @@
 
       <!-- PDF 1.4: every control has a label; selects have explicit values. -->
       <form class="filters" id="filters-form" aria-label="Catalogue filters • مرشحات الكتالوج">
-        <div class="filter-field filter-search">
-          <label for="search-input"><span class="bi-en" lang="en">Search products</span><span class="bi-ar" lang="ar" dir="rtl">ابحث في المنتجات</span></label>
-          <input type="search" id="search-input" list="recent-searches" placeholder="Try: bag, ring, shirt" autocomplete="off" spellcheck="false">
-          <datalist id="recent-searches"></datalist>
-          <small class="filter-hint"><span class="bi-en" lang="en">Debounced by 350 ms</span><span class="bi-ar" lang="ar" dir="rtl">بعد 350 مللي ثانية</span></small>
+        <div class="filter-primary">
+          <div class="filter-field filter-search">
+            <label for="search-input"><span class="bi-en" lang="en">Search products</span><span class="bi-ar" lang="ar" dir="rtl">ابحث في المنتجات</span></label>
+            <input type="search" id="search-input" list="recent-searches" placeholder="Try: bag, ring, shirt" autocomplete="off" spellcheck="false">
+            <datalist id="recent-searches"></datalist>
+            <small class="filter-hint"><span class="bi-en" lang="en">Debounced by 350 ms</span><span class="bi-ar" lang="ar" dir="rtl">بعد 350 مللي ثانية</span></small>
+          </div>
+
+          <div class="filter-field">
+            <label for="category-select"><span class="bi-en" lang="en">Category (path parameter)</span><span class="bi-ar" lang="ar" dir="rtl">التصنيف (مسار)</span></label>
+            <select id="category-select"><option value="all">All • الكل</option></select>
+          </div>
+
+          <fieldset class="view-switch">
+            <legend><span class="bi-en" lang="en">View</span><span class="bi-ar" lang="ar" dir="rtl">العرض</span></legend>
+            <button class="btn btn-outline" id="grid-view" type="button" aria-pressed="true"><span class="bi-en" lang="en">Grid</span><span class="bi-ar" lang="ar" dir="rtl">شبكة</span></button>
+            <button class="btn btn-outline" id="table-view" type="button" aria-pressed="false"><span class="bi-en" lang="en">Table</span><span class="bi-ar" lang="ar" dir="rtl">جدول</span></button>
+          </fieldset>
+
+          <button class="btn btn-outline clear-button" id="clear-filters" type="button"><span class="bi-en" lang="en">Clear filters</span><span class="bi-ar" lang="ar" dir="rtl">مسح المرشحات</span></button>
         </div>
 
-        <div class="filter-field">
-          <label for="category-select"><span class="bi-en" lang="en">Category (path parameter)</span><span class="bi-ar" lang="ar" dir="rtl">التصنيف (مسار)</span></label>
-          <select id="category-select"><option value="all">All • الكل</option></select>
-        </div>
+        <details class="advanced-filters">
+          <summary>
+            <span class="bi-en" lang="en">Advanced API options</span>
+            <span class="bi-ar" lang="ar" dir="rtl">خيارات الـ API المتقدمة</span>
+          </summary>
+          <div class="advanced-grid">
+            <div class="filter-field">
+              <label for="server-sort-select"><span class="bi-en" lang="en">Server sort (?sort=)</span><span class="bi-ar" lang="ar" dir="rtl">ترتيب السيرفر (?sort=)</span></label>
+              <select id="server-sort-select">
+                <option value="">Default • الافتراضي</option>
+                <option value="asc">Asc • تصاعدي</option>
+                <option value="desc">Desc • تنازلي</option>
+              </select>
+            </div>
 
-        <div class="filter-field">
-          <label for="server-sort-select"><span class="bi-en" lang="en">Server sort (?sort=)</span><span class="bi-ar" lang="ar" dir="rtl">ترتيب السيرفر</span></label>
-          <select id="server-sort-select">
-            <option value="">Default • الافتراضي</option>
-            <option value="asc">Asc • تصاعدي</option>
-            <option value="desc">Desc • تنازلي</option>
-          </select>
-        </div>
+            <div class="filter-field">
+              <label for="server-limit-select"><span class="bi-en" lang="en">Server limit (?limit=)</span><span class="bi-ar" lang="ar" dir="rtl">حد السيرفر (?limit=)</span></label>
+              <select id="server-limit-select">
+                <option value="0">All • الكل</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
 
-        <div class="filter-field">
-          <label for="server-limit-select"><span class="bi-en" lang="en">Server limit (?limit=)</span><span class="bi-ar" lang="ar" dir="rtl">حد السيرفر</span></label>
-          <select id="server-limit-select">
-            <option value="0">All • الكل</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
+            <div class="filter-field">
+              <label for="page-size-select"><span class="bi-en" lang="en">Page size</span><span class="bi-ar" lang="ar" dir="rtl">حجم الصفحة</span></label>
+              <select id="page-size-select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
 
-        <div class="filter-field">
-          <label for="page-size-select"><span class="bi-en" lang="en">Page size</span><span class="bi-ar" lang="ar" dir="rtl">حجم الصفحة</span></label>
-          <select id="page-size-select">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
-
-        <div class="filter-field">
-          <label for="browser-sort-select"><span class="bi-en" lang="en">Browser sort</span><span class="bi-ar" lang="ar" dir="rtl">ترتيب المتصفح</span></label>
-          <select id="browser-sort-select">
-            <option value="">None • لا شيء</option>
-            <option value="price-asc">Price ↑</option>
-            <option value="price-desc">Price ↓</option>
-            <option value="rating-desc">Rating ↓</option>
-            <option value="title-asc">Title A–Z</option>
-          </select>
-        </div>
-
-        <fieldset class="view-switch">
-          <legend><span class="bi-en" lang="en">View</span><span class="bi-ar" lang="ar" dir="rtl">العرض</span></legend>
-          <button class="btn btn-outline" id="grid-view" type="button" aria-pressed="true"><span class="bi-en" lang="en">Grid</span><span class="bi-ar" lang="ar" dir="rtl">شبكة</span></button>
-          <button class="btn btn-outline" id="table-view" type="button" aria-pressed="false"><span class="bi-en" lang="en">Table</span><span class="bi-ar" lang="ar" dir="rtl">جدول</span></button>
-        </fieldset>
-
-        <button class="btn btn-outline clear-button" id="clear-filters" type="button"><span class="bi-en" lang="en">Clear filters</span><span class="bi-ar" lang="ar" dir="rtl">مسح المرشحات</span></button>
+            <div class="filter-field">
+              <label for="browser-sort-select"><span class="bi-en" lang="en">Browser sort</span><span class="bi-ar" lang="ar" dir="rtl">ترتيب المتصفح</span></label>
+              <select id="browser-sort-select">
+                <option value="">None • لا شيء</option>
+                <option value="price-asc">Price ↑</option>
+                <option value="price-desc">Price ↓</option>
+                <option value="rating-desc">Rating ↓</option>
+                <option value="title-asc">Title A–Z</option>
+              </select>
+            </div>
+          </div>
+        </details>
       </form>
 
       <p class="result-summary" id="result-summary" aria-live="polite"><span class="bi-en" lang="en">Loading products…</span><span class="bi-ar" lang="ar" dir="rtl">جارٍ تحميل المنتجات…</span></p>

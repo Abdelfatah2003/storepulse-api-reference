@@ -17,7 +17,7 @@ const RECENT_SEARCH_LIMIT = 5;
 const TOAST_DURATION_MS = 3200;
 
 const THEMES = ['light', 'dark', 'sunrise'];
-const THEME_COLOURS = { light: '#4f46e5', dark: '#0b0f19', sunrise: '#ea580c' };
+const THEME_COLOURS = { light: '#4f46e5', dark: '#0b0f19', sunrise: '#c2410c' };
 const LANGS = ['both', 'en', 'ar'];
 const PAGE_SIZES = [5, 10, 20];
 
@@ -630,14 +630,15 @@ function setupTheme() {
 }
 
 function applyLang(mode) {
-  const safe = LANGS.includes(mode) ? mode : 'both';
+  const safe = LANGS.includes(mode) ? mode : 'ar';
   document.documentElement.setAttribute('data-lang', safe);
   document.documentElement.setAttribute('lang', safe === 'ar' ? 'ar' : 'en');
+  document.documentElement.setAttribute('dir', safe === 'ar' ? 'rtl' : 'ltr');
   return safe;
 }
 
 function setupLanguage() {
-  const saved = readJson(localStorage, LOCAL_KEYS.language, 'both');
+  const saved = readJson(localStorage, LOCAL_KEYS.language, 'ar');
   applyLang(saved);
   const checked = document.querySelector(`input[name="site-lang"][value="${saved}"]`);
   if (checked) checked.checked = true;
