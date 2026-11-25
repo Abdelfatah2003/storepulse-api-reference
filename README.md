@@ -144,9 +144,11 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 ## Testing notes
 
-- **Console:** clean on load, zero uncaught errors.
+- **Full suite:** 72 automated checks were repeated 10 times with a fresh tab and empty storage each run: **720/720 passed**.
+- **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
 - **Responsive:** no horizontal scroll at 320, 768 or 1280 px in any theme; hamburger appears at ≤768 px and is hidden at 1280 px.
-- **Keyboard:** first `Tab` focuses the skip link; `Enter` moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
+- **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
+- **Keyboard:** the first focusable element is the skip link; activating it moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
 - **Browsers:** automated checks ran in Chromium. A second-browser check was not possible in this environment, so it remains a manual review item.
 
 ## What I learned

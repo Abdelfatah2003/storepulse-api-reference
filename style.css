@@ -345,6 +345,9 @@ code {
 }
 
 .primary-nav > a {
+  min-height: var(--size-touch);
+  display: inline-flex;
+  align-items: center;
   color: var(--text-secondary);
   font-weight: 600;
   padding: var(--space-2);
@@ -392,8 +395,8 @@ code {
 }
 
 .lang-switch label {
-  min-width: 40px;
-  min-height: 36px;
+  min-width: 44px;
+  min-height: var(--size-touch);
   display: grid;
   place-items: center;
   border: 1px solid var(--border-subtle);
@@ -767,7 +770,7 @@ textarea {
 }
 
 .card-actions .btn {
-  min-height: 40px;
+  min-height: var(--size-touch);
   font-size: 0.8rem;
   flex: 1 1 auto;
 }
@@ -830,7 +833,7 @@ textarea {
 }
 
 .table-actions .btn {
-  min-height: 36px;
+  min-height: var(--size-touch);
   padding: var(--space-1) var(--space-2);
   font-size: 0.75rem;
 }
@@ -947,8 +950,8 @@ textarea {
 }
 
 .quantity-controls .btn {
-  min-height: 32px;
-  width: 32px;
+  min-height: var(--size-touch);
+  width: var(--size-touch);
   padding: 0;
 }
 
