@@ -144,7 +144,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 ## Testing notes
 
-- **Full suite:** 72 automated checks were repeated 10 times with a fresh tab and empty storage each run: **720/720 passed**.
+- **Full suite:** 72 automated checks were repeated 20 times with a fresh tab and empty storage each run: **1440/1440 passed**.
 - **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
 - **Responsive:** no horizontal scroll at 320, 768 or 1280 px in any theme; hamburger appears at ≤768 px and is hidden at 1280 px.
 - **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
