@@ -432,7 +432,10 @@ function createProductCard(product) {
   image.loading = 'lazy';
   attachImageFallback(image);
 
-  card.querySelector('.category-badge').textContent = product.category || '';
+  const category = product.category || '';
+  card.querySelector('.category-badge').textContent = category;
+  card.querySelector('.card-media').setAttribute('aria-label',
+    `View details for ${product.title || 'product'} (${category || 'uncategorized'}) • عرض تفاصيل المنتج`);
   card.querySelector('.title-button').textContent = product.title || '';
   card.querySelector('.product-description').textContent = product.description || '';
   card.querySelector('.product-price').textContent = formatPrice(product.price);
@@ -636,6 +639,7 @@ function applyTheme(theme) {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', THEME_COLOURS[safe]);
   byId('theme-button-label').textContent = THEME_LABELS[safe];
+  byId('theme-cycle').setAttribute('aria-label', `Change colour theme • ${THEME_LABELS[safe]}`);
   return safe;
 }
 

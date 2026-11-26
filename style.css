@@ -335,6 +335,10 @@ code {
   gap: var(--space-3);
   margin-inline-end: auto;
   min-width: 0;
+  min-height: var(--size-touch);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
 }
 
 .brand-logo {
@@ -346,6 +350,11 @@ code {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: var(--text-inverse);
   border-radius: var(--radius-md);
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+
+.brand-group:hover .brand-logo {
+  transform: scale(1.05);
 }
 
 .brand-text {
@@ -553,6 +562,10 @@ textarea {
 /* --------------------------------------------------------------------------
    6. Hero and section headings
    -------------------------------------------------------------------------- */
+#home {
+  scroll-margin-top: var(--size-header);
+}
+
 .hero {
   position: relative;
   overflow: hidden;

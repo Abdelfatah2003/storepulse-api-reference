@@ -34,6 +34,7 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - Page sizes 5 / 10 / 20; any filter change returns to page 1.
 - Grid of cards and a real `<table>` with `caption`, `thead` and `th scope`, sharing the same data and pagination.
 - Product detail, edit, delete confirmation, favourites, cart, checkout and login.
+- Clickable StorePulse logo in the header returns to the top of the page (`#home`) and has a visible focus ring.
 - Three switchable themes: **Light**, **Dark** and **Sunrise** — one repeatedly-pressable button cycles them; the first visit still follows `prefers-color-scheme`.
 - English / Arabic / Both switcher inherited from `api.html`; the first visit starts in single-language Arabic (`dir="rtl"`), while **Both** remains available as a learning aid.
 - Compact toolbar: search, category, view and clear stay visible; `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.

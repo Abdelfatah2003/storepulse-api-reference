@@ -18,7 +18,7 @@
   <!-- PDF 1.2: header landmark. The single h1 lives in the hero below. -->
   <header class="app-header" id="app-header">
     <div class="header-container">
-      <div class="brand-group">
+      <a class="brand-group" id="brand-home" href="#home">
         <div class="brand-logo" aria-hidden="true">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
@@ -32,7 +32,8 @@
           <p class="brand-title">StorePulse</p>
           <p class="brand-subtitle"><span class="bi-en" lang="en">Live API storefront</span><span class="bi-ar" lang="ar" dir="rtl">متجر حي مدعوم بالـ API</span></p>
         </div>
-      </div>
+        <span class="sr-only"> — home • الصفحة الرئيسية</span>
+      </a>
 
       <!-- PDF 3.3: hamburger menu built by us; CSS shows it on phones. -->
       <button class="btn btn-icon menu-toggle" id="menu-toggle" type="button" aria-label="Open menu • افتح القائمة" aria-expanded="false" aria-controls="primary-nav">
@@ -46,7 +47,7 @@
         <a href="#account-panel"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></a>
 
         <!-- PDF 3.5: three themes, cycled by one repeatedly-pressable button. -->
-        <button class="btn btn-outline theme-cycle" id="theme-cycle" type="button" aria-label="Change colour theme • تغيير الثيم">
+        <button class="btn btn-outline theme-cycle" id="theme-cycle" type="button" aria-label="Change colour theme • ☀️ Light / فاتح">
           <span id="theme-button-label" aria-hidden="true">☀️ Light / فاتح</span>
         </button>
 
@@ -66,7 +67,7 @@
 
   <!-- PDF 1.2: the one main landmark. -->
   <main id="main-content" class="page-main" tabindex="-1">
-    <section class="hero" aria-labelledby="page-title">
+    <section class="hero" id="home" aria-labelledby="page-title">
       <div class="hero-copy">
         <p class="hero-kicker"><span class="bi-en" lang="en">StorePulse / live storefront</span><span class="bi-ar" lang="ar" dir="rtl">StorePulse / متجر حي</span></p>
         <h1 id="page-title"><span class="bi-en" lang="en">Shop smarter with StorePulse</span><span class="bi-ar" lang="ar" dir="rtl">تسوّق بذكاء مع StorePulse</span></h1>
