@@ -38,7 +38,7 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - The thin line at the very top is a scroll-progress indicator: a subtle track plus a theme-coloured fill that grows from the inline start as the page scrolls (`--scroll-progress`, updated on a passive/rAF-throttled scroll listener).
 - Three switchable themes: **Light**, **Dark** and **Sunrise** — one repeatedly-pressable button cycles them; the first visit still follows `prefers-color-scheme`.
 - English / Arabic / Both switcher inherited from `api.html`; the first visit starts in single-language Arabic (`dir="rtl"`), while **Both** remains available as a learning aid.
-- Compact toolbar: search, category, view and clear share **one straight row** from 641 px upward; on phones they wrap into short rows instead of scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
+- Compact toolbar: search, category, view and clear share **one straight row** from 769 px upward; at 768 px and below (including 680 px) they wrap into short rows instead of clipping the last control or scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
 - No sideways scroll anywhere: the table keeps its real `<table>` markup but becomes labelled cards at 640 px and below; dialogs only scroll vertically.
 - Loading, error and empty states with retry and a one-click "clear filters" action; clear feedback through a live-region toast.
 - Clicking a product image, title or table thumbnail opens details; the detail dialog also has add-to-cart and favourite actions, closes on backdrop/Esc, and failed images get a local SVG fallback.
@@ -99,11 +99,11 @@ Passwords, secret keys, personal data and the full product list. The token is ne
 | PATCH | `/products/1` with Bearer token | 200 |
 | DELETE | `/products/1` with Bearer token | 200 |
 | POST | `/auth/login` wrong password | 401 plain text |
-| POST | `/auth/login` valid demo credentials | 201 with token |
+| POST | `/auth/login` valid demo credentials (`mor_2314` / `83r5^_`) | 201 with token |
 | POST | `/products` with Bearer token | 201 |
 | POST | `/carts` with Bearer token | 201 |
 
-FakeStoreAPI only simulates writes; it does not permanently save them. An unknown product id may answer `200` with an empty body, and a wrong password answers `401` with plain text rather than JSON.
+FakeStoreAPI only simulates writes; it does not permanently save them. This app therefore keeps created/edited/deleted products and any new category in memory for the current session, so CRUD is visibly reflected even though a later `GET` cannot return it. An unknown product id may answer `200` with an empty body, and a wrong password answers `401` with plain text rather than JSON. The public demo login is shown in the account panel (`mor_2314` / `83r5^_`); it is a documented test user, not a secret, and only the resulting token is stored in `sessionStorage`.
 
 ## Scaling to 5,000 products
 
@@ -141,6 +141,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 | `evidence/M3-responsive-light.png` | 320 / 768 / 1280 px in the light theme. |
 | `evidence/M3-responsive-dark.png` | 320 / 768 / 1280 px in the dark theme. |
 | `evidence/M3-responsive-sunrise.png` | 320 / 768 / 1280 px in the sunrise theme. |
+| `evidence/M3-filter-680.png` | 680 px: filter controls wrap into short rows — nothing clipped, no sideways scroll. |
 | `evidence/M5-network-requests.png` | Headers, Payload and Response for every endpoint used. |
 | `evidence/M6-stress-test.png` | The three 5,000-product timings and median. |
 | `evidence/M6-table-view.png` | Real table view with 10 rows at 320 px, stacked as labelled cards with no sideways scroll. |
@@ -151,7 +152,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 - **Full suite:** 72 automated checks were repeated 20 times with a fresh tab and empty storage each run: **1440/1440 passed**.
 - **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
-- **Responsive:** no horizontal scroll at 320, 480, 640, 768 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The filter row stays straight from 641 px and wraps on phones; the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px.
+- **Responsive:** no horizontal scroll at 320, 480, 640, 680, 768 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The filter row stays straight from 769 px and wraps from 768 px down (so nothing is clipped at 680 px); the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px.
 - **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
 - **Keyboard:** the first focusable element is the skip link; activating it moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
 - **Browsers:** automated checks ran in Chromium. A second-browser check was not possible in this environment, so it remains a manual review item.

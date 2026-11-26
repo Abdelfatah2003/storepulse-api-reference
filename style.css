@@ -1459,10 +1459,8 @@ textarea {
   .cart-item {
     grid-template-columns: 1fr auto;
   }
-}
 
-/* Phones wrap the toolbar and turn the table into labelled cards: no sideways scroll. */
-@media (max-width: 640px) {
+  /* From here down the one-row toolbar would clip its last control, so wrap it. */
   .filter-primary {
     flex-wrap: wrap;
   }
@@ -1480,7 +1478,10 @@ textarea {
   .clear-button {
     flex: 1 1 auto;
   }
+}
 
+/* Phones turn the table into labelled cards: no sideways scroll. */
+@media (max-width: 640px) {
   .table-wrap {
     border: 0;
     background: none;

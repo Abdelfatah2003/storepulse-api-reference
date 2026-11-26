@@ -61,6 +61,10 @@ const state = {
   products: [],
   categories: [],
   filteredProducts: [],
+  /* FakeStoreAPI only echoes writes; keep them in memory so CRUD is visible. */
+  localProducts: [],
+  editedProducts: {},
+  deletedIds: [],
   filters: { ...DEFAULT_FILTERS },
   page: 1,
   pageSize: 10,
@@ -236,6 +240,37 @@ async function requestJson(url, options = {}) {
   }
 }
 
+/* FakeStoreAPI does not persist writes, so merge our in-memory results into reads. */
+function sameProductId(first, second) {
+  return Number(first) === Number(second);
+}
+
+function mergeCatalogue(serverProducts) {
+  const source = Array.isArray(serverProducts) ? serverProducts : [];
+  const preserved = source
+    .filter((product) => !state.deletedIds.some((id) => sameProductId(id, product.id)))
+    .map((product) => {
+      const edited = state.editedProducts[product.id] || state.editedProducts[String(product.id)];
+      return edited ? { ...product, ...edited } : product;
+    });
+
+  const usedIds = new Set(preserved.map((product) => Number(product.id)));
+  const additions = state.localProducts.filter((product) => {
+    if (state.filters.category !== 'all' && product.category !== state.filters.category) return false;
+    if (usedIds.has(Number(product.id))) return false;
+    usedIds.add(Number(product.id));
+    return true;
+  });
+
+  return [...additions, ...preserved];
+}
+
+function rememberCategory(category) {
+  const clean = String(category || '').trim();
+  if (!clean || state.categories.includes(clean)) return;
+  state.categories = [...state.categories, clean];
+}
+
 async function loadCatalogue() {
   state.status = 'loading';
   render();
@@ -246,8 +281,9 @@ async function loadCatalogue() {
       requestJson(buildProductsUrl())
     ]);
 
-    state.categories = Array.isArray(categories) ? categories : [];
-    state.products = Array.isArray(products) ? products : [];
+    state.categories = Array.isArray(categories) ? [...categories] : [];
+    state.localProducts.forEach((product) => rememberCategory(product.category));
+    state.products = mergeCatalogue(products);
     state.error = '';
     state.status = 'ready';
     populateCategorySelect();
@@ -268,7 +304,8 @@ async function reloadProducts() {
 
   try {
     const products = await requestJson(buildProductsUrl());
-    state.products = Array.isArray(products) ? products : [];
+    state.products = mergeCatalogue(products);
+    populateCategorySelect();
     state.error = '';
     state.status = 'ready';
     applyLocalFilters();
@@ -954,7 +991,7 @@ async function handleLogin(event) {
 
     if (!response.ok) {
       throw new Error(response.status === 401
-        ? 'Wrong username or password (401).'
+        ? 'Wrong username or password (401). استخدم الحساب التجريبي الظاهر أدناه.'
         : `Login failed (HTTP ${response.status}).`);
     }
 
@@ -1092,11 +1129,47 @@ async function handleProductSubmit(event) {
       headers,
       body: JSON.stringify(payload)
     });
-    showToast(`${editingId ? 'Updated' : 'Created'} product ${saved?.id ?? editingId ?? ''}`.trim());
+    const savedObject = saved && typeof saved === 'object' ? saved : {};
+    const knownIds = [...state.products, ...state.localProducts].map((item) => Number(item.id));
+    let id = Number(savedObject.id);
+    if (!Number.isFinite(id) || knownIds.includes(id)) id = Math.max(0, ...knownIds) + 1;
+
+    const product = {
+      id,
+      title: payload.title,
+      price: payload.price,
+      description: payload.description,
+      image: payload.image,
+      category: payload.category,
+      rating: savedObject.rating || { rate: 0, count: 0 },
+      ...savedObject
+    };
+    product.id = id;
+    rememberCategory(product.category);
+
+    if (editingId) {
+      const originalId = Number(editingId);
+      const updated = { ...product, id: originalId };
+      state.editedProducts[originalId] = updated;
+      state.products = state.products.map((item) => sameProductId(item.id, originalId) ? { ...item, ...updated } : item);
+      state.localProducts = state.localProducts.map((item) => sameProductId(item.id, originalId) ? { ...item, ...updated } : item);
+    } else {
+      state.products = [product, ...state.products.filter((item) => !sameProductId(item.id, id))];
+      state.localProducts = [product, ...state.localProducts.filter((item) => !sameProductId(item.id, id))];
+    }
+
+    /* Make the new category/product visible instead of hiding it behind old filters. */
+    state.filters.category = product.category;
+    state.filters.search = '';
+    state.page = 1;
     state.draft = null;
     writeJson(sessionStorage, SESSION_KEYS.draft, null);
     byId('product-form-dialog').close();
-    await reloadProducts();
+    populateCategorySelect();
+    applyLocalFilters();
+    persistSessionState();
+    render();
+    showToast(`${editingId ? 'Updated' : 'Created'} product ${id} — ظاهر في هذه الجلسة لأن FakeStoreAPI يحاكي الحفظ فقط.`);
   } catch (error) {
     showToast(`Save failed: ${error.message}`);
   }
@@ -1108,8 +1181,16 @@ function askBeforeDelete(product) {
     if (state.token) headers.Authorization = `Bearer ${state.token}`;
     try {
       const removed = await requestJson(`${API_BASE_URL}/products/${product.id}`, { method: 'DELETE', headers });
-      showToast(`Delete accepted for product ${removed?.id ?? product.id}.`);
-      await reloadProducts();
+      const id = Number(product.id);
+      state.deletedIds = [...state.deletedIds.filter((item) => Number(item) !== id), id];
+      state.products = state.products.filter((item) => !sameProductId(item.id, id));
+      state.localProducts = state.localProducts.filter((item) => !sameProductId(item.id, id));
+      delete state.editedProducts[id];
+      state.favourites = state.favourites.filter((favourite) => Number(favourite) !== id);
+      persistLocalState();
+      applyLocalFilters();
+      render();
+      showToast(`Delete accepted for product ${removed?.id ?? id} — removed in this session.`);
     } catch (error) {
       showToast(`Delete failed: ${error.message}`);
     }
