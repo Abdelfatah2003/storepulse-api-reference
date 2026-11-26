@@ -768,27 +768,44 @@ textarea {
   box-shadow: var(--shadow-xs);
 }
 
+/* One straight row on wide screens; it wraps instead of scrolling on phones. */
 .filter-primary {
-  display: grid;
-  grid-template-columns: minmax(min(100%, 220px), 2fr) minmax(min(100%, 180px), 1fr) auto auto;
-  align-items: end;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
   gap: var(--space-3);
+  min-width: 0;
+  /* Leave room for the absolutely positioned debounce hint without another strip. */
+  padding-block-end: var(--space-5);
+}
+
+.filter-primary > * {
+  flex: 0 0 auto;
 }
 
 .filter-field {
   min-width: 0;
 }
 
-/* :first-child gives the search field priority on wide screens. */
+/* The hint is taken out of flow so the search input shares the control baseline. */
+.filter-search {
+  position: relative;
+}
+
+/* :first-child gives the search field priority while staying on the row. */
 .filter-primary > .filter-field:first-child {
+  flex: 1 1 220px;
   min-width: 220px;
 }
 
 .filter-hint {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
   display: block;
   color: var(--text-muted);
   font-size: 0.75rem;
-  margin-block-start: var(--space-1);
+  white-space: nowrap;
 }
 
 .view-switch {
@@ -796,16 +813,20 @@ textarea {
   display: flex;
   align-items: flex-end;
   gap: var(--space-2);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  margin: 0;
+  padding: 0;
 }
 
+/* The legend is kept for accessibility but does not add a second line. */
 .view-switch legend {
-  float: left;
-  width: 100%;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  font-weight: 700;
-  margin-block-end: var(--space-1);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  margin: 0;
 }
 
 .view-switch .btn[aria-pressed="true"] {
@@ -1047,7 +1068,6 @@ textarea {
 }
 
 .table-wrap {
-  overflow-x: auto;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
@@ -1056,7 +1076,6 @@ textarea {
 .product-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 640px;
 }
 
 .product-table caption {
@@ -1284,7 +1303,8 @@ textarea {
 .app-dialog {
   width: min(100% - 2 * var(--space-4), 560px);
   max-height: min(90vh, 720px);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
@@ -1376,17 +1396,8 @@ textarea {
    13. Responsive rules — no horizontal scroll at 320 px (PDF 3.3).
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
-  .filter-primary {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  }
-
   .filter-primary > .filter-field:first-child {
-    min-width: 0;
-  }
-
-  .view-switch,
-  .clear-button {
-    grid-column: span 1;
+    min-width: 180px;
   }
 
   .primary-nav > a {
@@ -1441,13 +1452,103 @@ textarea {
     display: none;
   }
 
-  .filter-primary,
   .advanced-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .cart-item {
     grid-template-columns: 1fr auto;
+  }
+}
+
+/* Phones wrap the toolbar and turn the table into labelled cards: no sideways scroll. */
+@media (max-width: 640px) {
+  .filter-primary {
+    flex-wrap: wrap;
+  }
+
+  .filter-primary > .filter-field:first-child {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .filter-primary > .filter-field:nth-child(2) {
+    flex: 0 1 140px;
+    min-width: 0;
+  }
+
+  .clear-button {
+    flex: 1 1 auto;
+  }
+
+  .table-wrap {
+    border: 0;
+    background: none;
+  }
+
+  .product-table,
+  .product-table tbody,
+  .product-table tr,
+  .product-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .product-table thead {
+    display: none;
+  }
+
+  .product-table caption {
+    padding-inline: 0;
+    font-weight: 700;
+  }
+
+  .product-table tr {
+    margin-block-end: var(--space-3);
+    padding: var(--space-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+  }
+
+  .product-table td {
+    display: grid;
+    grid-template-columns: minmax(var(--size-touch), auto) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1);
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .product-table td::before {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .product-table td:nth-child(1)::before { content: 'Image'; }
+  .product-table td:nth-child(2)::before { content: 'Title'; }
+  .product-table td:nth-child(3)::before { content: 'Category'; }
+  .product-table td:nth-child(4)::before { content: 'Price'; }
+  .product-table td:nth-child(5)::before { content: 'Rating'; }
+  .product-table td:nth-child(6)::before { content: 'Actions'; }
+
+  html[lang="ar"] .product-table td:nth-child(1)::before { content: 'الصورة'; }
+  html[lang="ar"] .product-table td:nth-child(2)::before { content: 'العنوان'; }
+  html[lang="ar"] .product-table td:nth-child(3)::before { content: 'التصنيف'; }
+  html[lang="ar"] .product-table td:nth-child(4)::before { content: 'السعر'; }
+  html[lang="ar"] .product-table td:nth-child(5)::before { content: 'التقييم'; }
+  html[lang="ar"] .product-table td:nth-child(6)::before { content: 'الإجراءات'; }
+
+  .product-table td:last-child {
+    display: block;
+  }
+
+  .product-table td:last-child::before {
+    display: block;
+    margin-block-end: var(--space-1);
   }
 }
 
@@ -1479,10 +1580,10 @@ textarea {
   }
 
   .filter-primary {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-block-end: 0;
   }
 
-  .filter-primary > .filter-field,
   .advanced-grid {
     grid-column: 1 / -1;
     grid-template-columns: minmax(0, 1fr);
@@ -1492,11 +1593,6 @@ textarea {
   .section-note,
   .filter-hint {
     display: none;
-  }
-
-  .view-switch,
-  .clear-button {
-    grid-column: span 1;
   }
 
   .view-switch {
@@ -1536,7 +1632,7 @@ textarea {
   }
 }
 
-/* Table stays usable on a phone via horizontal scrolling (PDF 6.4). */
+/* Touch devices skip the hover lift; the table is stacked above at 640px. */
 @media (hover: none) {
   .product-card:hover {
     transform: none;

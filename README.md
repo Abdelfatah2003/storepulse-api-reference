@@ -38,7 +38,8 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - The thin line at the very top is a scroll-progress indicator: a subtle track plus a theme-coloured fill that grows from the inline start as the page scrolls (`--scroll-progress`, updated on a passive/rAF-throttled scroll listener).
 - Three switchable themes: **Light**, **Dark** and **Sunrise** — one repeatedly-pressable button cycles them; the first visit still follows `prefers-color-scheme`.
 - English / Arabic / Both switcher inherited from `api.html`; the first visit starts in single-language Arabic (`dir="rtl"`), while **Both** remains available as a learning aid.
-- Compact toolbar: search, category, view and clear stay visible; `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
+- Compact toolbar: search, category, view and clear share **one straight row** from 641 px upward; on phones they wrap into short rows instead of scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
+- No sideways scroll anywhere: the table keeps its real `<table>` markup but becomes labelled cards at 640 px and below; dialogs only scroll vertically.
 - Loading, error and empty states with retry and a one-click "clear filters" action; clear feedback through a live-region toast.
 - Clicking a product image, title or table thumbnail opens details; the detail dialog also has add-to-cart and favourite actions, closes on backdrop/Esc, and failed images get a local SVG fallback.
 
@@ -142,7 +143,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 | `evidence/M3-responsive-sunrise.png` | 320 / 768 / 1280 px in the sunrise theme. |
 | `evidence/M5-network-requests.png` | Headers, Payload and Response for every endpoint used. |
 | `evidence/M6-stress-test.png` | The three 5,000-product timings and median. |
-| `evidence/M6-table-view.png` | Real table view with 10 rows and active view button. |
+| `evidence/M6-table-view.png` | Real table view with 10 rows at 320 px, stacked as labelled cards with no sideways scroll. |
 | `evidence/M7-console-sample.png` | Clean load, debounce proof and timing logs. |
 | `evidence/M9-storage.png` | localStorage and sessionStorage maps with token redacted. |
 
@@ -150,7 +151,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 - **Full suite:** 72 automated checks were repeated 20 times with a fresh tab and empty storage each run: **1440/1440 passed**.
 - **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
-- **Responsive:** no horizontal scroll at 320, 768 or 1280 px in any theme; hamburger appears at ≤768 px and is hidden at 1280 px.
+- **Responsive:** no horizontal scroll at 320, 480, 640, 768 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The filter row stays straight from 641 px and wraps on phones; the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px.
 - **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
 - **Keyboard:** the first focusable element is the skip link; activating it moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
 - **Browsers:** automated checks ran in Chromium. A second-browser check was not possible in this environment, so it remains a manual review item.
