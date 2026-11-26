@@ -103,6 +103,9 @@
   --line-tight: 1.4;
   --line-base: 1.6;
 
+  /* Scroll progress: JS updates only this value; the theme controls the colours. */
+  --scroll-progress: 0.03;
+
   /* z-index scale is explicit so overlapping layers stay understandable. */
   --z-header: 20;   /* Sticky header floats above normal content. */
   --z-dialog: 40;   /* Native dialogs sit above the header. */
@@ -311,13 +314,26 @@ code {
   box-shadow: var(--shadow-xs);
 }
 
+/* The thin top line is a scroll-progress track plus a theme-coloured fill. */
 .app-header::before {
   content: '';
   position: absolute;
   inset-block-start: 0;
   inset-inline: 0;
   height: var(--space-1);
+  background: var(--border-subtle);
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: var(--space-1);
+  width: calc(var(--scroll-progress, 0.03) * 100%);
   background: linear-gradient(90deg, var(--color-primary), var(--hero-line));
+  border-radius: var(--radius-full);
+  transition: width var(--duration-fast) linear;
 }
 
 .header-container {

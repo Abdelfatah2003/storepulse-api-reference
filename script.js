@@ -628,6 +628,7 @@ function render() {
   renderCart();
   renderAccount();
   renderRecentSearches();
+  updateScrollProgress();
 }
 
 /* --------------------------------------------------------------------------
@@ -1122,7 +1123,33 @@ function setupProductForms() {
 }
 
 /* --------------------------------------------------------------------------
-   12. Start-up — wire events, then fetch data.
+   12. Scroll progress — only the CSS variable changes; colours stay in CSS.
+   -------------------------------------------------------------------------- */
+let scrollFrame = 0;
+
+function updateScrollProgress() {
+  const root = document.documentElement;
+  const max = root.scrollHeight - window.innerHeight;
+  const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+  root.style.setProperty('--scroll-progress', (0.03 + ratio * 0.97).toFixed(4));
+}
+
+function setupScrollProgress() {
+  const queue = () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      updateScrollProgress();
+    });
+  };
+
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue, { passive: true });
+  updateScrollProgress();
+}
+
+/* --------------------------------------------------------------------------
+   13. Start-up — wire events, then fetch data.
    -------------------------------------------------------------------------- */
 function setupEvents() {
   byId('product-grid').addEventListener('click', handleProductAction);
@@ -1133,6 +1160,7 @@ function setupEvents() {
   setupAccount();
   setupDialogs();
   setupProductForms();
+  setupScrollProgress();
 }
 
 function start() {
