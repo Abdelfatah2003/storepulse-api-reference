@@ -45,13 +45,10 @@
         <a href="#cart-panel"><span class="bi-en" lang="en">Cart</span><span class="bi-ar" lang="ar" dir="rtl">السلة</span> <span class="nav-count" id="cart-count">0</span></a>
         <a href="#account-panel"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></a>
 
-        <!-- PDF 3.5: three themes, switchable in the interface. -->
-        <label class="nav-field" for="theme-select"><span class="bi-en" lang="en">Theme</span><span class="bi-ar" lang="ar" dir="rtl">الثيم</span></label>
-        <select id="theme-select" aria-label="Choose a colour theme • اختر ثيمًا">
-          <option value="light">Light • فاتح</option>
-          <option value="dark">Dark • داكن</option>
-          <option value="sunrise">Sunrise • شروق</option>
-        </select>
+        <!-- PDF 3.5: three themes, cycled by one repeatedly-pressable button. -->
+        <button class="btn btn-outline theme-cycle" id="theme-cycle" type="button" aria-label="Change colour theme • تغيير الثيم">
+          <span id="theme-button-label" aria-hidden="true">☀️ Light / فاتح</span>
+        </button>
 
         <!-- From api.html: bilingual switcher kept as a learning aid. -->
         <fieldset class="lang-switch">
@@ -246,12 +243,12 @@
   <!-- PDF 1.6: one reusable <template> for product cards. -->
   <template id="product-card-template">
     <article class="product-card" data-id="">
-      <div class="card-media">
+      <button class="card-media" type="button" data-action="detail" aria-label="View product details • عرض تفاصيل المنتج">
         <img class="product-image" src="" alt="" loading="lazy" width="400" height="400">
         <span class="category-badge"></span>
-      </div>
+      </button>
       <div class="card-body">
-        <h3 class="product-title"></h3>
+        <h3 class="product-title"><button class="title-button" type="button" data-action="detail"></button></h3>
         <p class="product-description"></p>
         <p class="card-meta"><span class="product-price"></span><span class="product-rating"></span></p>
       </div>
@@ -276,6 +273,10 @@
     <p class="detail-price" id="detail-price"></p>
     <p class="detail-rating" id="detail-rating"></p>
     <p class="detail-description" id="detail-description"></p>
+    <div class="dialog-actions">
+      <button class="btn btn-outline" id="detail-favourite" type="button" aria-pressed="false" aria-label="Add to favourites • أضف للمفضلة">♡</button>
+      <button class="btn btn-primary" id="detail-cart" type="button"><span class="bi-en" lang="en">Add to cart</span><span class="bi-ar" lang="ar" dir="rtl">أضف للسلة</span></button>
+    </div>
   </dialog>
 
   <dialog class="app-dialog" id="confirm-dialog" aria-labelledby="confirm-title">

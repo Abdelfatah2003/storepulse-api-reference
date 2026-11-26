@@ -15,9 +15,11 @@ const SEARCH_DEBOUNCE_MS = 350;
 const REQUEST_TIMEOUT_MS = 15000;
 const RECENT_SEARCH_LIMIT = 5;
 const TOAST_DURATION_MS = 3200;
+const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23e2e8f0'/%3E%3Ctext x='200' y='158' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%23475569'%3ENo image available%3C/text%3E%3C/svg%3E";
 
 const THEMES = ['light', 'dark', 'sunrise'];
 const THEME_COLOURS = { light: '#4f46e5', dark: '#0b0f19', sunrise: '#c2410c' };
+const THEME_LABELS = { light: '☀️ Light / فاتح', dark: '☾ Dark / داكن', sunrise: '🌅 Sunrise / شروق' };
 const LANGS = ['both', 'en', 'ar'];
 const PAGE_SIZES = [5, 10, 20];
 
@@ -107,6 +109,12 @@ function writeJson(storage, key, value) {
   } catch (error) {
     /* Storage may be blocked; the page still works without it. */
   }
+}
+
+function attachImageFallback(image) {
+  image.addEventListener('error', () => {
+    if (image.src !== FALLBACK_IMAGE) image.src = FALLBACK_IMAGE;
+  });
 }
 
 function formatPrice(priceInDollars) {
@@ -400,7 +408,12 @@ function renderStatus() {
     panel.dataset.state = 'empty';
     const text = document.createElement('p');
     text.textContent = 'No products match these filters. Try clearing the search or category.';
-    panel.append(text);
+    const clear = document.createElement('button');
+    clear.type = 'button';
+    clear.className = 'btn btn-outline';
+    clear.dataset.action = 'clear';
+    clear.textContent = 'Clear filters / مسح المرشحات';
+    panel.append(text, clear);
     return;
   }
 
@@ -417,9 +430,10 @@ function createProductCard(product) {
   image.src = product.image || '';
   image.alt = product.title || 'Product image';
   image.loading = 'lazy';
+  attachImageFallback(image);
 
   card.querySelector('.category-badge').textContent = product.category || '';
-  card.querySelector('.product-title').textContent = product.title || '';
+  card.querySelector('.title-button').textContent = product.title || '';
   card.querySelector('.product-description').textContent = product.description || '';
   card.querySelector('.product-price').textContent = formatPrice(product.price);
   card.querySelector('.product-rating').textContent = formatRating(product);
@@ -442,7 +456,14 @@ function createTableRow(product) {
   image.src = product.image || '';
   image.alt = product.title || 'Product image';
   image.loading = 'lazy';
-  imageCell.append(image);
+  attachImageFallback(image);
+  const imageButton = document.createElement('button');
+  imageButton.type = 'button';
+  imageButton.className = 'table-image-button';
+  imageButton.dataset.action = 'detail';
+  imageButton.setAttribute('aria-label', `View details for ${product.title || 'product'} • عرض تفاصيل المنتج`);
+  imageButton.append(image);
+  imageCell.append(imageButton);
 
   const values = [product.title || '', product.category || '', formatPrice(product.price), formatRating(product)];
   const cells = [imageCell];
@@ -614,7 +635,7 @@ function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', safe);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', THEME_COLOURS[safe]);
-  byId('theme-select').value = safe;
+  byId('theme-button-label').textContent = THEME_LABELS[safe];
   return safe;
 }
 
@@ -623,9 +644,10 @@ function setupTheme() {
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   applyTheme(THEMES.includes(saved) ? saved : (prefersDark ? 'dark' : 'light'));
 
-  byId('theme-select').addEventListener('change', (event) => {
-    const next = applyTheme(event.target.value);
-    writeJson(localStorage, LOCAL_KEYS.theme, next);
+  byId('theme-cycle').addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+    writeJson(localStorage, LOCAL_KEYS.theme, applyTheme(next));
   });
 }
 
@@ -727,6 +749,7 @@ function setupFilters() {
 
   byId('status-message').addEventListener('click', (event) => {
     if (event.target.closest('[data-action="retry"]')) loadCatalogue();
+    if (event.target.closest('[data-action="clear"]')) byId('clear-filters').click();
   });
 
   byId('grid-view').addEventListener('click', () => switchView('grid'));
@@ -808,14 +831,26 @@ async function openProductDetail(productId) {
       return;
     }
 
+    const detailImage = byId('detail-image');
+    attachImageFallback(detailImage);
     byId('detail-title').textContent = product.title || 'Product details';
-    byId('detail-image').src = product.image || '';
-    byId('detail-image').alt = product.title || 'Product image';
+    detailImage.src = product.image || FALLBACK_IMAGE;
+    detailImage.alt = product.title || 'Product image';
     byId('detail-category').textContent = product.category || '';
     byId('detail-price').textContent = formatPrice(product.price);
     byId('detail-rating').textContent = formatRating(product);
     byId('detail-description').textContent = product.description || '';
-    byId('detail-dialog').showModal();
+
+    const dialog = byId('detail-dialog');
+    dialog.dataset.id = String(product.id);
+    const favourite = byId('detail-favourite');
+    const active = isFavourite(product.id);
+    favourite.setAttribute('aria-pressed', String(active));
+    favourite.textContent = active ? '♥' : '♡';
+    favourite.setAttribute('aria-label', active
+      ? 'Remove from favourites • إزالة من المفضلة'
+      : 'Add to favourites • أضف للمفضلة');
+    dialog.showModal();
   } catch (error) {
     showToast(`Detail request failed: ${error.message}`);
   }
@@ -956,6 +991,24 @@ function openConfirm(message, action) {
 
 function setupDialogs() {
   byId('detail-close').addEventListener('click', () => byId('detail-dialog').close());
+
+  byId('detail-cart').addEventListener('click', () => {
+    const productId = Number(byId('detail-dialog').dataset.id);
+    const product = state.products.find((item) => Number(item.id) === productId);
+    if (product) addToCart(product);
+  });
+
+  byId('detail-favourite').addEventListener('click', () => {
+    toggleFavourite(Number(byId('detail-dialog').dataset.id));
+    const active = isFavourite(Number(byId('detail-dialog').dataset.id));
+    const button = byId('detail-favourite');
+    button.setAttribute('aria-pressed', String(active));
+    button.textContent = active ? '♥' : '♡';
+    button.setAttribute('aria-label', active
+      ? 'Remove from favourites • إزالة من المفضلة'
+      : 'Add to favourites • أضف للمفضلة');
+  });
+
   byId('confirm-cancel').addEventListener('click', () => byId('confirm-dialog').close());
   byId('confirm-accept').addEventListener('click', async () => {
     const action = state.confirmAction;
@@ -965,6 +1018,12 @@ function setupDialogs() {
   });
 
   byId('form-cancel').addEventListener('click', () => byId('product-form-dialog').close());
+
+  [byId('detail-dialog'), byId('confirm-dialog'), byId('product-form-dialog')].forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
 }
 
 function openProductForm(product = null) {
