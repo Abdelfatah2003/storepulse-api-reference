@@ -502,7 +502,7 @@ body.sidebar-collapsed .page-main {
    5. Buttons, forms and focus states
    -------------------------------------------------------------------------- */
 .btn {
-  min-height: var(--size-touch);
+  min-width: var(--size-touch); min-height: var(--size-touch);
   display: inline-flex;
   align-items: center;
   justify-content: center;
