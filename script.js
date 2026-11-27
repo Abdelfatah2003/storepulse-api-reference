@@ -636,7 +636,7 @@ function renderCart() {
 
   const total = state.cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
   byId('cart-total').textContent = formatPrice(total);
-  byId('cart-count').textContent = String(state.cart.reduce((sum, item) => sum + Number(item.quantity), 0));
+  const cartItemCount = state.cart.reduce((sum, item) => sum + Number(item.quantity), 0); byId('cart-count').textContent = String(cartItemCount); byId('cart-open').setAttribute('aria-label', ({ ar: `السلة ${cartItemCount}`, en: `Cart ${cartItemCount}`, both: `Cart السلة ${cartItemCount}` })[document.documentElement.dataset.lang] || `السلة ${cartItemCount}`);
 }
 
 function renderAccount() {
@@ -701,7 +701,7 @@ function applyLang(mode, animate = false) {
   window.clearTimeout(state.langFadeTimer); state.langFadeTimer = root.classList.contains('lang-shifting') ? window.setTimeout(() => root.classList.remove('lang-shifting'), 150) : null;
   root.setAttribute('data-lang', safe); root.setAttribute('lang', safe === 'ar' ? 'ar' : 'en'); root.setAttribute('dir', safe === 'ar' ? 'rtl' : 'ltr');
   byId('lang-button-label').textContent = LANG_LABELS[safe];
-  byId('lang-cycle').setAttribute('aria-label', `Change language • ${LANG_LABELS[safe]} (${LANG_NAMES[safe]})`);
+  byId('lang-cycle').setAttribute('aria-label', `Change language • ${LANG_LABELS[safe]} (${LANG_NAMES[safe]})`); renderCart();
   return safe;
 }
 
@@ -823,34 +823,31 @@ function setupMenu() {
   });
 }
 
-function setSidebarOpen(open) {
-  document.body.classList.toggle('sidebar-collapsed', !open);
-  const button = byId('sidebar-toggle');
-  button.setAttribute('aria-expanded', String(open));
-  /* The compact state hides the visible text, so keep an explicit bilingual name. */
-  button.setAttribute('aria-label', open
-    ? 'Close cart and account • إغلاق السلة والحساب'
-    : 'Open cart and account • فتح السلة والحساب');
+let spaceOpener = null;
+
+function openSpace(section) {
+  const dialog = byId('space-dialog');
+  spaceOpener = document.activeElement;
+  if (!dialog.open) dialog.showModal();
+  dialog.dataset.section = section;
+
+  const panel = byId(section === 'account' ? 'account-panel' : 'cart-panel');
+  requestAnimationFrame(() => {
+    if (dialog.scrollHeight > dialog.clientHeight) panel.scrollIntoView({ block: 'start' });
+    const firstControl = panel.querySelector('button, input, a[href]');
+    if (firstControl) firstControl.focus({ preventScroll: true });
+  });
 }
 
-function setupSidebar() {
-  const button = byId('sidebar-toggle');
-  setSidebarOpen(true);
+function setupSpace() {
+  byId('cart-open').addEventListener('click', () => openSpace('cart'));
+  byId('account-open').addEventListener('click', () => openSpace('account'));
+  byId('space-close').addEventListener('click', () => byId('space-dialog').close());
 
-  button.addEventListener('click', () => {
-    setSidebarOpen(button.getAttribute('aria-expanded') !== 'true');
-  });
-
-  document.querySelectorAll('a[href="#cart-panel"], a[href="#account-panel"]').forEach((link) => {
-    link.addEventListener('click', () => setSidebarOpen(true));
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || document.querySelector('dialog[open]')) return;
-    if (!document.body.classList.contains('sidebar-collapsed')) {
-      setSidebarOpen(false);
-      button.focus();
-    }
+  /* Native <dialog> handles Escape; we only restore focus to the toolbar button. */
+  byId('space-dialog').addEventListener('close', () => {
+    if (spaceOpener && document.contains(spaceOpener)) spaceOpener.focus();
+    spaceOpener = null;
   });
 }
 
@@ -1268,7 +1265,7 @@ function setupEvents() {
   byId('product-table-body').addEventListener('click', handleProductAction);
   setupFilters();
   setupMenu();
-  setupSidebar();
+  setupSpace();
   setupCart();
   setupAccount();
   setupDialogs();

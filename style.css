@@ -92,8 +92,8 @@
   --size-card-min: 260px;
   --size-card-media: 220px;
   --size-hero-art: 180px;
-  --size-sidebar: 320px;
-  --size-sidebar-collapsed: 56px;
+  --size-overlay-close: 48px;
+  /* Cart and account use a full-screen layer, so no sidebar sizes are needed. */
   --size-image: 100%;
 
   --duration-fast: 150ms;
@@ -303,17 +303,13 @@ code {
   padding-block: var(--space-8) var(--space-12);
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--size-sidebar);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'hero sidebar'
-    'catalogue sidebar'
-    'footer footer';
+    'hero'
+    'catalogue'
+    'footer';
   align-items: start;
-  gap: var(--space-6) var(--space-5);
-}
-
-body.sidebar-collapsed .page-main {
-  grid-template-columns: minmax(0, 1fr) var(--size-sidebar-collapsed);
+  gap: var(--space-8) var(--space-5);
 }
 
 .hero {
@@ -424,46 +420,31 @@ body.sidebar-collapsed .page-main {
   min-width: 7rem;
 }
 
+/* These two actions stay visible when the hamburger collapses the menu. */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .theme-cycle,
 .lang-cycle,
-.sidebar-toggle {
+.space-open {
   min-height: var(--size-touch);
   white-space: nowrap;
   font-size: 0.8rem;
 }
 
-/* Toolbar toggle: the icon shows the state, the label shows the next action. */
-.sidebar-toggle {
+/* Cart and account are actions: both buttons open the same full-screen layer. */
+.space-open {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   padding-inline: var(--space-3);
 }
 
-.sidebar-toggle[aria-expanded="false"] {
-  background: var(--color-primary-subtle);
-  border-color: var(--color-primary);
-  color: var(--color-primary-text);
-}
-
-.sidebar-toggle-icon::before {
-  content: '×';
-  font-size: 1.05rem;
-  line-height: 1;
-}
-
-.sidebar-toggle[aria-expanded="false"] .sidebar-toggle-icon::before {
-  content: '☰';
-}
-
-.sidebar-toggle[aria-expanded="true"] .label-closed,
-.sidebar-toggle[aria-expanded="false"] .label-open {
-  display: none;
-}
-
-.primary-nav > a,
-.rail-nav > a {
+.primary-nav > a {
   min-height: var(--size-touch);
   display: inline-flex;
   align-items: center;
@@ -473,10 +454,8 @@ body.sidebar-collapsed .page-main {
   border-radius: var(--radius-sm);
 }
 
-.primary-nav > a:hover,
-.rail-nav > a:hover {
-  background: var(--bg-surface);
-  color: var(--color-primary-text);
+.primary-nav > a:hover {
+  background: var(--bg-subtle);
   text-decoration: none;
 }
 
@@ -1250,103 +1229,69 @@ textarea {
 }
 
 /* --------------------------------------------------------------------------
-   10. Sidebar rail — starts beside the hero and follows the catalogue.
+   10. Full-screen cart/account layer — opened from the top toolbar.
    -------------------------------------------------------------------------- */
-.side-layout {
-  grid-area: sidebar;
-  position: static;
-  /* The page scrolls; the rail never owns a scroll container. */
-  align-self: start;
-  display: grid;
-  gap: var(--space-4);
-  /* No height cap, so no clipped panels and no thin inner scrollbar. */
-  overflow: visible;
-  min-width: 0;
-  scrollbar-width: none;
-  /* A soft frame separates the rail from the catalogue without new colours. */
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-subtle);
-  border-inline-start: 3px solid var(--color-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
+.space-dialog {
+  position: fixed;
+  inset: 0;
+  inline-size: 100vw;
+  block-size: 100vh;
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: var(--z-dialog);
 }
 
-/* The rail now owns its section links and its own toggle. */
-.side-rail-toolbar {
+.space-dialog::backdrop {
+  background: var(--bg-overlay);
+}
+
+.space-dialog-inner {
+  inline-size: min(100% - 2 * var(--space-4), var(--size-container));
+  margin-inline: auto;
+  padding-block: var(--space-6) var(--space-12);
+}
+
+.space-dialog-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2);
-  min-width: 0;
-  margin-block-end: var(--space-3);
-}
-
-.rail-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-width: 0;
-}
-
-.rail-nav > a {
-  min-width: var(--size-touch);
-  justify-content: center;
-  font-size: 0.8rem;
-}
-
-.side-rail-heading {
-  padding-block-end: var(--space-3);
+  gap: var(--space-4);
+  margin-block-end: var(--space-6);
+  padding-block-end: var(--space-4);
   border-block-end: 1px solid var(--border-subtle);
 }
 
-.side-rail-heading .eyebrow {
-  margin-block-end: var(--space-1);
-}
-
-.side-rail-heading h2 {
-  font-size: 1.1rem;
+.space-dialog-head h2 {
+  font-size: clamp(1.3rem, 3vw, 2rem);
   margin-block-end: 0;
 }
 
-.side-rail-content {
+.space-close {
+  inline-size: var(--size-overlay-close);
+  block-size: var(--size-overlay-close);
+  font-size: 1.25rem;
+  flex: 0 0 auto;
+}
+
+.space-dialog-body {
   display: grid;
-  gap: var(--space-4);
-}
-
-body.sidebar-collapsed .side-layout {
-  inline-size: var(--size-touch);
-  justify-self: center;
-  justify-items: center;
-  overflow: visible;
-  background: transparent;
-  border-color: transparent;
-  border-inline-start-color: var(--color-primary);
-  border-radius: 0;
-  padding: 0;
-}
-
-body.sidebar-collapsed .rail-nav,
-body.sidebar-collapsed .side-rail-heading,
-body.sidebar-collapsed .side-rail-content {
-  display: none;
-}
-
-body.sidebar-collapsed .side-rail-toolbar {
-  justify-content: center;
-  margin-block-end: 0;
-}
-
-body.sidebar-collapsed .sidebar-toggle {
-  padding: 0;
-}
-
-body.sidebar-collapsed .sidebar-toggle-text {
-  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-5);
+  align-items: start;
 }
 
 #cart-panel,
 #account-panel {
-  scroll-margin-block-start: calc(var(--size-header) + var(--space-4));
+  scroll-margin-block-start: var(--space-6);
 }
 
 .side-panel {
@@ -1536,33 +1481,14 @@ body.sidebar-collapsed .sidebar-toggle-text {
 /* --------------------------------------------------------------------------
    13. Responsive rules — no horizontal scroll at 320 px (PDF 3.3).
    -------------------------------------------------------------------------- */
-/* Laptops get the rail; narrower screens keep the same panels in flow. */
+/* The full-screen layer keeps one roomy column on smaller screens. */
 @media (max-width: 1024px) {
-  .page-main,
-  body.sidebar-collapsed .page-main {
+  .space-dialog-inner {
+    inline-size: calc(100% - 2 * var(--space-3));
+  }
+
+  .space-dialog-body {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'hero'
-      'catalogue'
-      'sidebar'
-      'footer';
-  }
-
-  .side-layout {
-    position: static;
-    max-height: none;
-    overflow: visible;
-    gap: var(--space-4);
-    margin-block-start: var(--space-8);
-  }
-
-  .side-rail-content {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: var(--space-5);
-  }
-
-  body.sidebar-collapsed .side-layout {
-    overflow: visible;
   }
 }
 
@@ -1590,6 +1516,40 @@ body.sidebar-collapsed .sidebar-toggle-text {
   .menu-toggle.btn {
     display: inline-flex;
     order: 2;
+  }
+
+  .header-actions {
+    order: 1;
+  }
+
+  /* Keep the two overlay actions visible as compact icons next to the hamburger. */
+  .space-open {
+    padding-inline: var(--space-1);
+    gap: var(--space-1);
+  }
+
+  .space-open > .bi-en,
+  .space-open > .bi-ar {
+    display: none;
+  }
+
+  .space-open::before {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  #cart-open::before {
+    content: '🛒';
+  }
+
+  #account-open::before {
+    content: '👤';
+  }
+
+  .space-open .nav-count {
+    min-width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.65rem;
   }
 
   .primary-nav {
@@ -1906,4 +1866,16 @@ html[lang="ar"] .hero-kicker {
 @keyframes toast-in {
   from { opacity: 0; transform: translate(-50%, var(--space-2)); }
   to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* --------------------------------------------------------------------------
+   17. Full-screen overlay motion
+   -------------------------------------------------------------------------- */
+.space-dialog[open] {
+  animation: overlay-in var(--duration-normal) var(--ease-standard) both;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
