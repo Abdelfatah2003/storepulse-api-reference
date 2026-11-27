@@ -424,7 +424,8 @@ body.sidebar-collapsed .page-main {
   min-width: 7rem;
 }
 
-.theme-cycle {
+.theme-cycle,
+.lang-cycle {
   min-height: var(--size-touch);
   white-space: nowrap;
   font-size: 0.8rem;
@@ -463,47 +464,6 @@ body.sidebar-collapsed .page-main {
 }
 
 .menu-toggle.btn {
-  display: none;
-}
-
-.lang-switch {
-  border: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.lang-switch input {
-  position: absolute;
-  opacity: 0;
-  width: 1px;
-  height: 1px;
-}
-
-.lang-switch label {
-  min-width: 44px;
-  min-height: var(--size-touch);
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.lang-switch input:checked + label {
-  background: var(--color-primary-subtle);
-  color: var(--color-primary-text);
-  border-color: var(--color-primary);
-}
-
-.lang-switch input:focus-visible + label {
-  outline: 3px solid var(--border-focus);
-  outline-offset: 2px;
-}
-
-.lang-short {
   display: none;
 }
 
@@ -884,6 +844,16 @@ textarea {
   .clear-button {
     flex: 1 1 auto;
   }
+}
+
+/* Both languages make every label longer, so give the toolbar a second row. */
+[data-lang="both"] .filter-primary {
+  flex-wrap: wrap;
+}
+
+[data-lang="both"] .filter-primary > .filter-field:first-child {
+  flex: 1 1 100%;
+  min-width: 0;
 }
 
 .advanced-filters {
@@ -1591,8 +1561,7 @@ body.sidebar-collapsed .sidebar-toggle {
   }
 
   .primary-nav > a,
-  .nav-field,
-  .lang-switch {
+  .nav-field {
     flex: 1 1 auto;
   }
 
@@ -1752,13 +1721,6 @@ body.sidebar-collapsed .sidebar-toggle {
     padding: 0;
   }
 
-  .lang-full {
-    display: none;
-  }
-
-  .lang-short {
-    display: inline;
-  }
 }
 
 @media (max-width: 360px) {

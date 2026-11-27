@@ -8,8 +8,8 @@
 
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
-  <link rel="stylesheet" href="style.css?v=6">
-  <script src="script.js?v=5" defer></script>
+  <link rel="stylesheet" href="style.css?v=8">
+  <script src="script.js?v=7" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -51,16 +51,10 @@
           <span id="theme-button-label" aria-hidden="true">☀️ Light / فاتح</span>
         </button>
 
-        <!-- From api.html: bilingual switcher kept as a learning aid. -->
-        <fieldset class="lang-switch">
-          <legend class="sr-only">Language • اللغة</legend>
-          <input type="radio" name="site-lang" id="lang-both" value="both">
-          <label for="lang-both"><span class="lang-full">EN+ع</span><span class="lang-short" aria-hidden="true">Both</span></label>
-          <input type="radio" name="site-lang" id="lang-ar" value="ar" checked>
-          <label for="lang-ar"><span class="lang-full">ع</span><span class="lang-short" aria-hidden="true">AR</span></label>
-          <input type="radio" name="site-lang" id="lang-en" value="en">
-          <label for="lang-en"><span class="lang-full">EN</span><span class="lang-short" aria-hidden="true">EN</span></label>
-        </fieldset>
+        <!-- From api.html: one repeatedly-pressable language button (ع → EN+ع → EN). -->
+        <button class="btn btn-outline lang-cycle" id="lang-cycle" type="button" aria-label="Change language • ع (Arabic)">
+          <span id="lang-button-label" aria-hidden="true">ع</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -215,9 +209,9 @@
           <p class="eyebrow"><span class="bi-en" lang="en">Your space</span><span class="bi-ar" lang="ar" dir="rtl">مساحتك</span></p>
           <h2 id="sidebar-title"><span class="bi-en" lang="en">Account &amp; cart</span><span class="bi-ar" lang="ar" dir="rtl">الحساب والسلة</span></h2>
         </div>
-        <button class="btn btn-outline sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="side-rail-content" aria-expanded="true" aria-label="Close sidebar • إغلاق الشريط">
+        <button class="btn btn-outline sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="side-rail-content" aria-expanded="true">
           <span class="sidebar-toggle-icon" aria-hidden="true"></span>
-          <span class="sidebar-toggle-text"><span class="bi-en" lang="en">Close</span><span class="bi-ar" lang="ar" dir="rtl">إغلاق</span></span>
+          <span class="sidebar-toggle-text"><span class="bi-en" lang="en">Close sidebar</span><span class="bi-ar" lang="ar" dir="rtl">إغلاق الشريط</span></span>
         </button>
       </div>
 

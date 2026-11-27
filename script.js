@@ -21,6 +21,8 @@ const THEMES = ['light', 'dark', 'sunrise'];
 const THEME_COLOURS = { light: '#4f46e5', dark: '#0b0f19', sunrise: '#c2410c' };
 const THEME_LABELS = { light: '☀️ Light / فاتح', dark: '☾ Dark / داكن', sunrise: '🌅 Sunrise / شروق' };
 const LANGS = ['both', 'en', 'ar'];
+const LANG_LABELS = { ar: 'ع', both: 'EN+ع', en: 'EN' };
+const LANG_NAMES = { ar: 'Arabic / العربية', both: 'Both / كلاهما', en: 'English / الإنجليزية' };
 const PAGE_SIZES = [5, 10, 20];
 
 const LOCAL_KEYS = {
@@ -698,19 +700,19 @@ function applyLang(mode) {
   document.documentElement.setAttribute('data-lang', safe);
   document.documentElement.setAttribute('lang', safe === 'ar' ? 'ar' : 'en');
   document.documentElement.setAttribute('dir', safe === 'ar' ? 'rtl' : 'ltr');
+  byId('lang-button-label').textContent = LANG_LABELS[safe];
+  byId('lang-cycle').setAttribute('aria-label', `Change language • ${LANG_LABELS[safe]} (${LANG_NAMES[safe]})`);
   return safe;
 }
 
 function setupLanguage() {
   const saved = readJson(localStorage, LOCAL_KEYS.language, 'ar');
   applyLang(saved);
-  const checked = document.querySelector(`input[name="site-lang"][value="${saved}"]`);
-  if (checked) checked.checked = true;
 
-  document.querySelectorAll('input[name="site-lang"]').forEach((radio) => {
-    radio.addEventListener('change', () => {
-      if (radio.checked) writeJson(localStorage, LOCAL_KEYS.language, applyLang(radio.value));
-    });
+  byId('lang-cycle').addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-lang');
+    const next = LANGS[(LANGS.indexOf(current) + 1) % LANGS.length];
+    writeJson(localStorage, LOCAL_KEYS.language, applyLang(next));
   });
 }
 
@@ -825,13 +827,18 @@ function setSidebarOpen(open) {
   document.body.classList.toggle('sidebar-collapsed', !open);
   const button = byId('sidebar-toggle');
   button.setAttribute('aria-expanded', String(open));
-  button.setAttribute('aria-label', open
-    ? 'Close sidebar • إغلاق الشريط'
-    : 'Open sidebar • فتح الشريط');
+  /* The expanded name comes from the visible bilingual text; the collapsed
+     icon is decorative, so it needs an explicit label in both languages. */
+  if (open) {
+    button.removeAttribute('aria-label');
+  } else {
+    button.setAttribute('aria-label', 'Open sidebar • فتح الشريط');
+  }
 }
 
 function setupSidebar() {
   const button = byId('sidebar-toggle');
+  setSidebarOpen(true);
 
   button.addEventListener('click', () => {
     setSidebarOpen(button.getAttribute('aria-expanded') !== 'true');
