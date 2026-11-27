@@ -1780,3 +1780,90 @@ html.lang-shifting .bi-ar,
 html.lang-shifting #lang-button-label {
   opacity: 0;
 }
+
+/* --------------------------------------------------------------------------
+   16. Comfort polish — calmer rhythm and softer feedback for daily use.
+   -------------------------------------------------------------------------- */
+:root {
+  --line-base: 1.65;
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05), 0 8px 18px -12px rgba(15, 23, 42, 0.18);
+  --shadow-md: 0 2px 4px 0 rgba(15, 23, 42, 0.06), 0 14px 28px -14px rgba(15, 23, 42, 0.22);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 481px) {
+  .hero {
+    padding: var(--space-8);
+  }
+}
+
+.hero h1 {
+  letter-spacing: 0;
+}
+
+html[lang="ar"] .hero-kicker {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hero-lead {
+  font-size: 1rem;
+}
+
+.product-card,
+.side-panel,
+.app-dialog {
+  transition:
+    transform var(--duration-normal) var(--ease-standard),
+    box-shadow var(--duration-normal) var(--ease-standard),
+    background-color var(--duration-normal) var(--ease-standard),
+    border-color var(--duration-normal) var(--ease-standard);
+}
+
+.product-card:hover,
+.product-card:focus-within {
+  border-color: var(--color-primary);
+}
+
+.product-table tbody tr {
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.product-table tbody tr:hover {
+  background: var(--bg-subtle);
+}
+
+.category-badge,
+.product-rating,
+.card-actions .btn,
+.table-actions .btn,
+.privacy-note,
+.filter-hint {
+  font-size: 0.8rem;
+}
+
+.side-panel:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.app-dialog[open] {
+  animation: dialog-in var(--duration-normal) var(--ease-standard) both;
+}
+
+.toast {
+  animation: toast-in var(--duration-normal) var(--ease-standard) both;
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(var(--space-2)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, var(--space-2)); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
