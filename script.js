@@ -855,17 +855,26 @@ function closeSpace() {
 }
 
 function setupSpace() {
+  const dialog = byId('space-dialog');
   byId('cart-open').addEventListener('click', () => openSpace('cart'));
   byId('account-open').addEventListener('click', () => openSpace('account'));
   byId('space-close').addEventListener('click', closeSpace);
 
+  /* A backdrop click targets the dialog itself; compare coords to keep padding clicks open. */
+  dialog.addEventListener('click', (event) => {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    if (outside) closeSpace();
+  });
+
   /* Escape and the close button share the same animated exit path. */
-  byId('space-dialog').addEventListener('cancel', (event) => {
+  dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     closeSpace();
   });
 
-  byId('space-dialog').addEventListener('close', () => {
+  dialog.addEventListener('close', () => {
     if (spaceOpener && document.contains(spaceOpener)) spaceOpener.focus();
     spaceOpener = null;
   });

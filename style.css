@@ -445,21 +445,6 @@ code {
   padding-inline: var(--space-3);
 }
 
-.primary-nav > a {
-  min-height: var(--size-touch);
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-secondary);
-  font-weight: 600;
-  padding: var(--space-2);
-  border-radius: var(--radius-sm);
-}
-
-.primary-nav > a:hover {
-  background: var(--bg-subtle);
-  text-decoration: none;
-}
-
 .nav-count {
   display: inline-grid;
   place-items: center;
@@ -1501,10 +1486,6 @@ textarea {
   .filter-primary > .filter-field:first-child {
     min-width: 180px;
   }
-
-  .primary-nav > a {
-    padding-inline: var(--space-1);
-  }
 }
 
 @media (max-width: 768px) {
@@ -1569,7 +1550,6 @@ textarea {
     display: flex;
   }
 
-  .primary-nav > a,
   .nav-field {
     flex: 1 1 auto;
   }
