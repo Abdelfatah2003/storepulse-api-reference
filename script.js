@@ -825,9 +825,12 @@ function setupMenu() {
 
 function setSidebarOpen(open) {
   document.body.classList.toggle('sidebar-collapsed', !open);
-  /* The visible bilingual label already says "Close" or "Open", so CSS keeps
-     the icon decorative and the accessible name matches what users see. */
-  byId('sidebar-toggle').setAttribute('aria-expanded', String(open));
+  const button = byId('sidebar-toggle');
+  button.setAttribute('aria-expanded', String(open));
+  /* The compact state hides the visible text, so keep an explicit bilingual name. */
+  button.setAttribute('aria-label', open
+    ? 'Close cart and account • إغلاق السلة والحساب'
+    : 'Open cart and account • فتح السلة والحساب');
 }
 
 function setupSidebar() {

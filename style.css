@@ -305,7 +305,7 @@ code {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--size-sidebar);
   grid-template-areas:
-    'hero hero'
+    'hero sidebar'
     'catalogue sidebar'
     'footer footer';
   align-items: start;
@@ -462,7 +462,8 @@ body.sidebar-collapsed .page-main {
   display: none;
 }
 
-.primary-nav > a {
+.primary-nav > a,
+.rail-nav > a {
   min-height: var(--size-touch);
   display: inline-flex;
   align-items: center;
@@ -472,8 +473,10 @@ body.sidebar-collapsed .page-main {
   border-radius: var(--radius-sm);
 }
 
-.primary-nav > a:hover {
-  background: var(--bg-subtle);
+.primary-nav > a:hover,
+.rail-nav > a:hover {
+  background: var(--bg-surface);
+  color: var(--color-primary-text);
   text-decoration: none;
 }
 
@@ -1247,7 +1250,7 @@ textarea {
 }
 
 /* --------------------------------------------------------------------------
-   10. Sidebar rail — the cart and account stay beside the catalogue.
+   10. Sidebar rail — starts beside the hero and follows the catalogue.
    -------------------------------------------------------------------------- */
 .side-layout {
   grid-area: sidebar;
@@ -1266,6 +1269,29 @@ textarea {
   border-inline-start: 3px solid var(--color-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
+}
+
+/* The rail now owns its section links and its own toggle. */
+.side-rail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+  margin-block-end: var(--space-3);
+}
+
+.rail-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.rail-nav > a {
+  min-width: var(--size-touch);
+  justify-content: center;
+  font-size: 0.8rem;
 }
 
 .side-rail-heading {
@@ -1299,8 +1325,22 @@ body.sidebar-collapsed .side-layout {
   padding: 0;
 }
 
+body.sidebar-collapsed .rail-nav,
 body.sidebar-collapsed .side-rail-heading,
 body.sidebar-collapsed .side-rail-content {
+  display: none;
+}
+
+body.sidebar-collapsed .side-rail-toolbar {
+  justify-content: center;
+  margin-block-end: 0;
+}
+
+body.sidebar-collapsed .sidebar-toggle {
+  padding: 0;
+}
+
+body.sidebar-collapsed .sidebar-toggle-text {
   display: none;
 }
 

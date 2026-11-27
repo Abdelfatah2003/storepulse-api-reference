@@ -33,7 +33,7 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - Browser-side sorting by price, rating and title.
 - Page sizes 5 / 10 / 20; any filter change returns to page 1.
 - Grid of cards and a real `<table>` with `caption`, `thead` and `th scope`, sharing the same data and pagination.
-- Product detail, edit, delete confirmation, favourites, cart, checkout and login. The cart and account live in a styled sticky sidebar beside the catalogue; its 44 px toggle sits in the top toolbar (next to the theme and language buttons), changes its bilingual label between "Close/Open", and the Cart/Account nav links also reopen the rail automatically.
+- Product detail, edit, delete confirmation, favourites, cart, checkout and login. The cart and account live in a styled sticky sidebar that **starts beside the hero** and continues down beside the catalogue. Its section links, cart count and 44 px open/close toggle now live inside the rail itself — the top navigation keeps only Shop, theme and language. On tablets/phones the rail follows the products so the catalogue stays first.
 - Clickable StorePulse logo in the header returns to the top of the page (`#home`) and has a visible focus ring.
 - Comfort-first visuals: softer shadows, a roomier hero on larger screens, larger small labels, Arabic headlines without Latin-style letter-spacing, and gentle hover/focus feedback on cards, table rows and side panels. Dialogs and toasts ease in without changing layout.
 - The thin line at the very top is a scroll-progress indicator: a subtle track plus a theme-coloured fill that grows from the inline start as the page scrolls (`--scroll-progress`, updated on a passive/rAF-throttled scroll listener).
