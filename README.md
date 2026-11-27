@@ -33,12 +33,12 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - Browser-side sorting by price, rating and title.
 - Page sizes 5 / 10 / 20; any filter change returns to page 1.
 - Grid of cards and a real `<table>` with `caption`, `thead` and `th scope`, sharing the same data and pagination.
-- Product detail, edit, delete confirmation, favourites, cart, checkout and login.
+- Product detail, edit, delete confirmation, favourites, cart, checkout and login. The cart and account live in a sticky sidebar beside the catalogue; its 44 px toggle collapses or expands the rail, and the Cart/Account nav links reopen it automatically.
 - Clickable StorePulse logo in the header returns to the top of the page (`#home`) and has a visible focus ring.
 - The thin line at the very top is a scroll-progress indicator: a subtle track plus a theme-coloured fill that grows from the inline start as the page scrolls (`--scroll-progress`, updated on a passive/rAF-throttled scroll listener).
 - Three switchable themes: **Light**, **Dark** and **Sunrise** — one repeatedly-pressable button cycles them; the first visit still follows `prefers-color-scheme`.
 - English / Arabic / Both switcher inherited from `api.html`; the first visit starts in single-language Arabic (`dir="rtl"`), while **Both** remains available as a learning aid.
-- Compact toolbar: search, category, view and clear share **one straight row** from 769 px upward; at 768 px and below (including 680 px) they wrap into short rows instead of clipping the last control or scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
+- Compact toolbar: search, category, view and clear share **one straight row** whenever the catalogue is at least 820 px wide; when the sidebar narrows it (or the viewport drops to 768 px and below, including 680 px) the controls wrap into short rows instead of clipping the last control or scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
 - No sideways scroll anywhere: the table keeps its real `<table>` markup but becomes labelled cards at 640 px and below; dialogs only scroll vertically.
 - Loading, error and empty states with retry and a one-click "clear filters" action; clear feedback through a live-region toast.
 - Clicking a product image, title or table thumbnail opens details; the detail dialog also has add-to-cart and favourite actions, closes on backdrop/Esc, and failed images get a local SVG fallback.
@@ -152,7 +152,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 - **Full suite:** 72 automated checks were repeated 20 times with a fresh tab and empty storage each run: **1440/1440 passed**.
 - **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
-- **Responsive:** no horizontal scroll at 320, 480, 640, 680, 768 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The filter row stays straight from 769 px and wraps from 768 px down (so nothing is clipped at 680 px); the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px.
+- **Responsive:** no horizontal scroll at 320, 480, 640, 680, 768, 1024 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The sticky sidebar sits beside the catalogue above 1024 px and becomes stacked panels below that; its toggle keeps a 44px target and reopens from the Cart/Account links. The filter row stays straight while the catalogue has ≥820 px and wraps below that (so nothing is clipped at 680 px or on narrower laptops with the rail open); the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px.
 - **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
 - **Keyboard:** the first focusable element is the skip link; activating it moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
 - **Browsers:** automated checks ran in Chromium. A second-browser check was not possible in this environment, so it remains a manual review item.

@@ -8,8 +8,8 @@
 
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js?v=2" defer></script>
+  <link rel="stylesheet" href="style.css?v=6">
+  <script src="script.js?v=5" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -208,33 +208,46 @@
       <nav class="pagination" id="pagination" aria-label="Product pages • صفحات المنتجات"></nav>
     </section>
 
-    <!-- PDF M8/M9: cart, login and storage-backed controls. -->
-    <div class="side-layout">
-      <aside class="side-panel" id="cart-panel" aria-labelledby="cart-title">
-        <h2 id="cart-title"><span class="bi-en" lang="en">Your cart</span><span class="bi-ar" lang="ar" dir="rtl">سلتك</span></h2>
-        <ul class="cart-list" id="cart-items"></ul>
-        <p class="cart-total"><span class="bi-en" lang="en">Total</span><span class="bi-ar" lang="ar" dir="rtl">المجموع</span>: <strong id="cart-total">$0.00</strong></p>
-        <div class="panel-actions">
-          <button class="btn btn-primary" id="checkout-button" type="button"><span class="bi-en" lang="en">Checkout (POST /carts)</span><span class="bi-ar" lang="ar" dir="rtl">إتمام الطلب</span></button>
-          <button class="btn btn-outline" id="clear-cart" type="button"><span class="bi-en" lang="en">Clear cart</span><span class="bi-ar" lang="ar" dir="rtl">إفراغ السلة</span></button>
+    <!-- PDF M8/M9: cart, login and storage-backed controls in a sidebar rail. -->
+    <aside class="side-layout" id="side-rail" aria-labelledby="sidebar-title">
+      <div class="side-rail-heading">
+        <div class="side-rail-label">
+          <p class="eyebrow"><span class="bi-en" lang="en">Your space</span><span class="bi-ar" lang="ar" dir="rtl">مساحتك</span></p>
+          <h2 id="sidebar-title"><span class="bi-en" lang="en">Account &amp; cart</span><span class="bi-ar" lang="ar" dir="rtl">الحساب والسلة</span></h2>
         </div>
-      </aside>
+        <button class="btn btn-outline sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="side-rail-content" aria-expanded="true" aria-label="Close sidebar • إغلاق الشريط">
+          <span class="sidebar-toggle-icon" aria-hidden="true"></span>
+          <span class="sidebar-toggle-text"><span class="bi-en" lang="en">Close</span><span class="bi-ar" lang="ar" dir="rtl">إغلاق</span></span>
+        </button>
+      </div>
 
-      <aside class="side-panel" id="account-panel" aria-labelledby="account-title">
-        <h2 id="account-title"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></h2>
-        <p class="account-status" id="account-status"><span class="bi-en" lang="en">Not signed in</span><span class="bi-ar" lang="ar" dir="rtl">غير مسجل الدخول</span></p>
-        <form class="login-form" id="login-form">
-          <label for="login-username"><span class="bi-en" lang="en">Username</span><span class="bi-ar" lang="ar" dir="rtl">اسم المستخدم</span></label>
-          <input type="text" id="login-username" required autocomplete="username">
-          <label for="login-password"><span class="bi-en" lang="en">Password</span><span class="bi-ar" lang="ar" dir="rtl">كلمة المرور</span></label>
-          <input type="password" id="login-password" required autocomplete="current-password">
-          <button class="btn btn-primary" id="login-submit" type="submit"><span class="bi-en" lang="en">Sign in</span><span class="bi-ar" lang="ar" dir="rtl">دخول</span></button>
-        </form>
-        <button class="btn btn-outline" id="logout-button" type="button" hidden><span class="bi-en" lang="en">Sign out</span><span class="bi-ar" lang="ar" dir="rtl">خروج</span></button>
-        <p class="privacy-note"><span class="bi-en" lang="en">The password is sent to the API but never stored in the browser.</span><span class="bi-ar" lang="ar" dir="rtl">تُرسل كلمة المرور إلى الـ API ولا تُخزَّن في المتصفح أبدًا.</span></p>
-        <p class="privacy-note"><span class="bi-en" lang="en">Public FakeStoreAPI demo user (not a secret): <code>mor_2314</code> / <code>83r5^_</code></span><span class="bi-ar" lang="ar" dir="rtl">حساب تجريبي عام في FakeStoreAPI (ليس سرياً): <code>mor_2314</code> / <code>83r5^_</code></span></p>
-      </aside>
-    </div>
+      <div class="side-rail-content" id="side-rail-content">
+        <section class="side-panel" id="cart-panel" aria-labelledby="cart-title">
+          <h3 id="cart-title"><span class="bi-en" lang="en">Your cart</span><span class="bi-ar" lang="ar" dir="rtl">سلتك</span></h3>
+          <ul class="cart-list" id="cart-items"></ul>
+          <p class="cart-total"><span class="bi-en" lang="en">Total</span><span class="bi-ar" lang="ar" dir="rtl">المجموع</span>: <strong id="cart-total">$0.00</strong></p>
+          <div class="panel-actions">
+            <button class="btn btn-primary" id="checkout-button" type="button"><span class="bi-en" lang="en">Checkout (POST /carts)</span><span class="bi-ar" lang="ar" dir="rtl">إتمام الطلب</span></button>
+            <button class="btn btn-outline" id="clear-cart" type="button"><span class="bi-en" lang="en">Clear cart</span><span class="bi-ar" lang="ar" dir="rtl">إفراغ السلة</span></button>
+          </div>
+        </section>
+
+        <section class="side-panel" id="account-panel" aria-labelledby="account-title">
+          <h3 id="account-title"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></h3>
+          <p class="account-status" id="account-status"><span class="bi-en" lang="en">Not signed in</span><span class="bi-ar" lang="ar" dir="rtl">غير مسجل الدخول</span></p>
+          <form class="login-form" id="login-form">
+            <label for="login-username"><span class="bi-en" lang="en">Username</span><span class="bi-ar" lang="ar" dir="rtl">اسم المستخدم</span></label>
+            <input type="text" id="login-username" required autocomplete="username">
+            <label for="login-password"><span class="bi-en" lang="en">Password</span><span class="bi-ar" lang="ar" dir="rtl">كلمة المرور</span></label>
+            <input type="password" id="login-password" required autocomplete="current-password">
+            <button class="btn btn-primary" id="login-submit" type="submit"><span class="bi-en" lang="en">Sign in</span><span class="bi-ar" lang="ar" dir="rtl">دخول</span></button>
+          </form>
+          <button class="btn btn-outline" id="logout-button" type="button" hidden><span class="bi-en" lang="en">Sign out</span><span class="bi-ar" lang="ar" dir="rtl">خروج</span></button>
+          <p class="privacy-note"><span class="bi-en" lang="en">The password is sent to the API but never stored in the browser.</span><span class="bi-ar" lang="ar" dir="rtl">تُرسل كلمة المرور إلى الـ API ولا تُخزَّن في المتصفح أبدًا.</span></p>
+          <p class="privacy-note"><span class="bi-en" lang="en">Public FakeStoreAPI demo user (not a secret): <code>mor_2314</code> / <code>83r5^_</code></span><span class="bi-ar" lang="ar" dir="rtl">حساب تجريبي عام في FakeStoreAPI (ليس سرياً): <code>mor_2314</code> / <code>83r5^_</code></span></p>
+        </section>
+      </div>
+    </aside>
 
     <!-- PDF 1.2: footer landmark. -->
     <footer class="page-footer">

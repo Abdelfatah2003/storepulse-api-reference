@@ -821,6 +821,35 @@ function setupMenu() {
   });
 }
 
+function setSidebarOpen(open) {
+  document.body.classList.toggle('sidebar-collapsed', !open);
+  const button = byId('sidebar-toggle');
+  button.setAttribute('aria-expanded', String(open));
+  button.setAttribute('aria-label', open
+    ? 'Close sidebar • إغلاق الشريط'
+    : 'Open sidebar • فتح الشريط');
+}
+
+function setupSidebar() {
+  const button = byId('sidebar-toggle');
+
+  button.addEventListener('click', () => {
+    setSidebarOpen(button.getAttribute('aria-expanded') !== 'true');
+  });
+
+  document.querySelectorAll('a[href="#cart-panel"], a[href="#account-panel"]').forEach((link) => {
+    link.addEventListener('click', () => setSidebarOpen(true));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+    if (!document.body.classList.contains('sidebar-collapsed')) {
+      setSidebarOpen(false);
+      button.focus();
+    }
+  });
+}
+
 /* --------------------------------------------------------------------------
    10. Product actions — one listener handles every card and table row.
    -------------------------------------------------------------------------- */
@@ -1235,6 +1264,7 @@ function setupEvents() {
   byId('product-table-body').addEventListener('click', handleProductAction);
   setupFilters();
   setupMenu();
+  setupSidebar();
   setupCart();
   setupAccount();
   setupDialogs();
