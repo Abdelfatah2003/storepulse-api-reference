@@ -1254,15 +1254,15 @@ textarea {
    -------------------------------------------------------------------------- */
 .side-layout {
   grid-area: sidebar;
-  position: sticky;
-  inset-block-start: calc(var(--size-header) + var(--space-4));
+  position: static;
+  /* The page scrolls; the rail never owns a scroll container. */
   align-self: start;
   display: grid;
   gap: var(--space-4);
-  max-height: calc(100vh - var(--size-header) - var(--space-8));
-  overflow-y: auto;
+  /* No height cap, so no clipped panels and no thin inner scrollbar. */
+  overflow: visible;
   min-width: 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   /* A soft frame separates the rail from the catalogue without new colours. */
   background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
@@ -1317,7 +1317,7 @@ body.sidebar-collapsed .side-layout {
   inline-size: var(--size-touch);
   justify-self: center;
   justify-items: center;
-  overflow-y: hidden;
+  overflow: visible;
   background: transparent;
   border-color: transparent;
   border-inline-start-color: var(--color-primary);
@@ -1562,7 +1562,7 @@ body.sidebar-collapsed .sidebar-toggle-text {
   }
 
   body.sidebar-collapsed .side-layout {
-    overflow: hidden;
+    overflow: visible;
   }
 }
 
