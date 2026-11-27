@@ -8,8 +8,9 @@
 
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
-  <link rel="stylesheet" href="style.css?v=19">
-  <script src="script.js?v=14" defer></script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Cpath d='M18 32h28M32 18v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=22">
+  <script src="script.js?v=19" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -210,7 +211,7 @@
       <nav class="pagination" id="pagination" aria-label="Product pages • صفحات المنتجات"></nav>
     </section>
 
-    <!-- PDF M8/M9: cart and account moved into the full-screen dialog below. -->
+    <!-- PDF M8/M9: cart and account moved into the compact dialog below. -->
 
     <!-- PDF 1.2: footer landmark. -->
     <footer class="page-footer">
@@ -240,13 +241,16 @@
     </article>
   </template>
 
-  <!-- PDF M8/M9 + 1.6: full-screen cart/account layer opened from the toolbar. -->
+  <!-- PDF M8/M9 + 1.6: compact cart/account dialog opened from the toolbar. -->
   <dialog class="space-dialog" id="space-dialog" aria-labelledby="space-title">
     <div class="space-dialog-inner">
       <header class="space-dialog-head">
         <div>
           <p class="eyebrow"><span class="bi-en" lang="en">Your space</span><span class="bi-ar" lang="ar" dir="rtl">مساحتك</span></p>
-          <h2 id="space-title"><span class="bi-en" lang="en">Account &amp; cart</span><span class="bi-ar" lang="ar" dir="rtl">الحساب والسلة</span></h2>
+          <h2 id="space-title">
+            <span class="space-title-cart"><span class="bi-en" lang="en">Your cart</span><span class="bi-ar" lang="ar" dir="rtl">سلتك</span></span>
+            <span class="space-title-account"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></span>
+          </h2>
         </div>
         <button class="btn btn-icon space-close" id="space-close" type="button" aria-label="Close cart and account • إغلاق السلة والحساب">✕</button>
       </header>

@@ -474,7 +474,7 @@ function createProductCard(product) {
   const category = product.category || '';
   card.querySelector('.category-badge').textContent = category;
   card.querySelector('.card-media').setAttribute('aria-label',
-    `View details for ${product.title || 'product'} (${category || 'uncategorized'}) • عرض تفاصيل المنتج`);
+    `View details for ${product.title || 'product'}, ${category || 'uncategorized'} • عرض تفاصيل المنتج`);
   card.querySelector('.title-button').textContent = product.title || '';
   card.querySelector('.product-description').textContent = product.description || '';
   card.querySelector('.product-price').textContent = formatPrice(product.price);
@@ -524,7 +524,7 @@ function createTableRow(product) {
   ].forEach(([action, label]) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'btn btn-outline';
+    button.className = ({ detail: 'btn btn-outline', cart: 'btn btn-primary', favourite: 'btn btn-icon favourite-button', edit: 'btn btn-outline', delete: 'btn btn-danger' })[action];
     button.dataset.action = action;
     button.textContent = label;
     if (action === 'favourite') button.setAttribute('aria-pressed', String(isFavourite(product.id)));
@@ -735,11 +735,12 @@ function setupFilters() {
   byId('search-input').addEventListener('input', (event) => {
     state.inputEvents += 1;
     window.clearTimeout(state.debounceTimer);
+    /* Capture now: a request finishing during the wait may re-render the input. */
+    const typed = event.target.value;
 
     /* PDF 7.2: debounce written with setTimeout + clearTimeout, no library. */
     state.debounceTimer = window.setTimeout(() => {
       state.filterRuns += 1;
-      const typed = event.target.value;
       state.filters.search = typed;
       recordRecentSearch(typed);
       resetToFirstPage();
@@ -828,23 +829,42 @@ let spaceOpener = null;
 function openSpace(section) {
   const dialog = byId('space-dialog');
   spaceOpener = document.activeElement;
-  if (!dialog.open) dialog.showModal();
   dialog.dataset.section = section;
+  dialog.classList.remove('is-closing');
+  if (!dialog.open) dialog.showModal();
 
   const panel = byId(section === 'account' ? 'account-panel' : 'cart-panel');
-  requestAnimationFrame(() => {
-    if (dialog.scrollHeight > dialog.clientHeight) panel.scrollIntoView({ block: 'start' });
-    const firstControl = panel.querySelector('button, input, a[href]');
-    if (firstControl) firstControl.focus({ preventScroll: true });
-  });
+  const firstControl = [...panel.querySelectorAll('button, input, a[href]')].find((el) => el.getClientRects().length > 0);
+  if (firstControl) firstControl.focus({ preventScroll: true });
+}
+
+function closeSpace() {
+  const dialog = byId('space-dialog');
+  if (!dialog.open || dialog.classList.contains('is-closing')) return;
+  dialog.classList.add('is-closing');
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    dialog.removeEventListener('animationend', finish);
+    dialog.classList.remove('is-closing');
+    dialog.close();
+  };
+  dialog.addEventListener('animationend', finish);
+  window.setTimeout(finish, 300);
 }
 
 function setupSpace() {
   byId('cart-open').addEventListener('click', () => openSpace('cart'));
   byId('account-open').addEventListener('click', () => openSpace('account'));
-  byId('space-close').addEventListener('click', () => byId('space-dialog').close());
+  byId('space-close').addEventListener('click', closeSpace);
 
-  /* Native <dialog> handles Escape; we only restore focus to the toolbar button. */
+  /* Escape and the close button share the same animated exit path. */
+  byId('space-dialog').addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeSpace();
+  });
+
   byId('space-dialog').addEventListener('close', () => {
     if (spaceOpener && document.contains(spaceOpener)) spaceOpener.focus();
     spaceOpener = null;

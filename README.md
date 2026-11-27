@@ -33,14 +33,14 @@ Opening `index.html` directly with `file://` also works for layout, but a local 
 - Browser-side sorting by price, rating and title.
 - Page sizes 5 / 10 / 20; any filter change returns to page 1.
 - Grid of cards and a real `<table>` with `caption`, `thead` and `th scope`, sharing the same data and pagination.
-- Product detail, edit, delete confirmation, favourites, cart, checkout and login. **Cart and Account are buttons in the top toolbar** (Cart keeps its live count); either one opens a **full-screen `<dialog>` above the site** holding the cart and login panels, so the storefront stays untouched underneath. The layer has a large close button (≥44 px), moves focus into the chosen panel, restores focus to the opener on close, and also closes with Esc. The nav holds Shop, theme and language; Cart and Account sit beside it in their own always-visible action group — no in-page sidebar.
+- Product detail, edit, delete confirmation, favourites, cart, checkout and login. **Cart and Account are buttons in the top toolbar** (Cart keeps its live count); either one opens a **compact `<dialog>` centred above the site** showing only the matching cart or account panel and title, so the storefront stays untouched underneath. The dialog eases in and out (Esc included), has a large close button (≥44 px), moves focus into the chosen panel and restores focus to the opener on close. The nav holds Shop, theme and language; Cart and Account sit beside it in their own always-visible action group — no in-page sidebar.
 - Clickable StorePulse logo in the header returns to the top of the page (`#home`) and has a visible focus ring.
-- Comfort-first visuals: softer shadows, a roomier hero on larger screens, larger small labels, Arabic headlines without Latin-style letter-spacing, and gentle hover/focus feedback on cards, table rows and side panels. Dialogs and toasts ease in without changing layout.
+- Comfort-first visuals: softer shadows, a roomier hero on larger screens, larger small labels, Arabic headlines without Latin-style letter-spacing, and gentle hover/focus feedback on cards, table rows and side panels. Dialogs and toasts ease in without changing layout; table actions use distinct primary, outline, favourite and danger colours so each action is scannable.
 - The thin line at the very top is a scroll-progress indicator: a subtle track plus a theme-coloured fill that grows from the inline start as the page scrolls (`--scroll-progress`, updated on a passive/rAF-throttled scroll listener).
 - Three switchable themes: **Light**, **Dark** and **Sunrise** — one repeatedly-pressable button cycles them; the first visit still follows `prefers-color-scheme`.
 - English / Arabic / Both switcher inherited from `api.html`, now a **single repeatedly-pressable button**: `ع → EN+ع → EN → ع`. The first visit still starts in single-language Arabic (`dir="rtl"`), and the choice persists in `storepulse_api_lang` with no new storage key. Switching fades the bilingual labels over 150 ms via `opacity` only, so layout never jumps; `prefers-reduced-motion` skips the fade.
 - Compact toolbar: search, category, view and clear share **one straight row** whenever the catalogue is at least 820 px wide; when the viewport drops to 768 px and below (including 680 px), or **Both** languages are shown, the controls wrap into short rows instead of clipping the last control or scrolling sideways. `?sort=`, `?limit=`, page size and browser sort live in an accessible `<details>` panel.
-- No sideways scroll anywhere: the table keeps its real `<table>` markup but becomes labelled cards at 640 px and below; dialogs only scroll vertically.
+- No sideways scroll anywhere: the table keeps its real `<table>` markup but becomes padded, labelled cards with a three-column action grid at 640 px and below; dialogs only scroll vertically.
 - Loading, error and empty states with retry and a one-click "clear filters" action; clear feedback through a live-region toast.
 - Clicking a product image, title or table thumbnail opens details; the detail dialog also has add-to-cart and favourite actions, closes on backdrop/Esc, and failed images get a local SVG fallback.
 
@@ -50,6 +50,7 @@ Typing in the search box does **not** request the API. Each `input` event cancel
 
 ```js
 window.clearTimeout(state.debounceTimer);
+const typed = input.value; // capture before any re-render clears the field
 state.debounceTimer = window.setTimeout(() => {
   state.filters.search = typed;
   applyLocalFilters();
@@ -153,7 +154,7 @@ The response would include the 20 products plus a total count (or a `x-total-cou
 
 - **Full suite:** 72 automated checks were repeated 20 times with a fresh tab and empty storage each run: **1440/1440 passed**.
 - **Console:** clean on load and throughout the suite, zero uncaught errors. The only console error seen was the expected 401 from the deliberate wrong-password test.
-- **Responsive:** no horizontal scroll at 320, 480, 640, 680, 768, 1024 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The cart/account layer fills the viewport at every width and stacks its two panels below 1024 px, so nothing is clipped; the filter row stays straight while the catalogue has ≥820 px and wraps below that (including 680 px); the table becomes labelled cards at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px; Cart and Account remain visible as 44 px icon buttons beside it whenever the menu is collapsed, so the full-screen layer is reachable at every width.
+- **Responsive:** no horizontal scroll at 320, 480, 640, 680, 768, 1024 or 1280 px in any theme; no section has an `overflow-x: auto/scroll` container. The compact cart/account dialog stays smaller than the viewport and centred at every width, showing one panel at a time and scrolling vertically if needed; the filter row stays straight while the catalogue has ≥820 px and wraps below that (including 680 px); the table becomes labelled cards with coloured actions at ≤640 px; dialogs scroll vertically only. Hamburger appears at ≤768 px and is hidden at 1280 px; Cart and Account remain visible as 44 px icon buttons beside it whenever the menu is collapsed, so the dialog is reachable at every width.
 - **Touch targets:** every interactive button/control measured at least 44 px in all three tested widths.
 - **Keyboard:** the first focusable element is the skip link; activating it moves focus to `main`; `Tab` reaches search in four steps; typing works; `:focus-visible` outlines are present.
 - **Browsers:** automated checks ran in Chromium. A second-browser check was not possible in this environment, so it remains a manual review item.
