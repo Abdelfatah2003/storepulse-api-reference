@@ -1158,17 +1158,15 @@ async function handleProductSubmit(event) {
       state.localProducts = [product, ...state.localProducts.filter((item) => !sameProductId(item.id, id))];
     }
 
-    /* Make the new category/product visible instead of hiding it behind old filters. */
+    /* Match the visible list to the selected category after the write. */
     state.filters.category = product.category;
     state.filters.search = '';
     state.page = 1;
     state.draft = null;
     writeJson(sessionStorage, SESSION_KEYS.draft, null);
     byId('product-form-dialog').close();
-    populateCategorySelect();
-    applyLocalFilters();
-    persistSessionState();
-    render();
+    /* Category filtering happens in the request URL, so re-request that category. */
+    await reloadProducts();
     showToast(`${editingId ? 'Updated' : 'Created'} product ${id} — ظاهر في هذه الجلسة لأن FakeStoreAPI يحاكي الحفظ فقط.`);
   } catch (error) {
     showToast(`Save failed: ${error.message}`);

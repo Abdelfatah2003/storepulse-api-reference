@@ -103,7 +103,7 @@ Passwords, secret keys, personal data and the full product list. The token is ne
 | POST | `/products` with Bearer token | 201 |
 | POST | `/carts` with Bearer token | 201 |
 
-FakeStoreAPI only simulates writes; it does not permanently save them. This app therefore keeps created/edited/deleted products and any new category in memory for the current session, so CRUD is visibly reflected even though a later `GET` cannot return it. An unknown product id may answer `200` with an empty body, and a wrong password answers `401` with plain text rather than JSON. The public demo login is shown in the account panel (`mor_2314` / `83r5^_`); it is a documented test user, not a secret, and only the resulting token is stored in `sessionStorage`.
+FakeStoreAPI only simulates writes; it does not permanently save them. This app therefore keeps created/edited/deleted products and any new category in memory for the current session, so CRUD is visibly reflected even though a later `GET` cannot return it. After saving, the app re-requests the selected category so the list actually shows that filter (including a brand-new category such as `حريمه`). An unknown product id may answer `200` with an empty body, and a wrong password answers `401` with plain text rather than JSON. The public demo login is shown in the account panel (`mor_2314` / `83r5^_`); it is a documented test user, not a secret, and only the resulting token is stored in `sessionStorage`.
 
 ## Scaling to 5,000 products
 
