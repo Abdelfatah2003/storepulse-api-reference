@@ -118,6 +118,8 @@ function writeJson(storage, key, value) {
 }
 
 function attachImageFallback(image) {
+  if (image.dataset.fallbackReady) return;
+  image.dataset.fallbackReady = 'true';
   image.addEventListener('error', () => {
     if (image.src !== FALLBACK_IMAGE) image.src = FALLBACK_IMAGE;
   });
@@ -138,6 +140,22 @@ function formatRating(product) {
 
 function isFavourite(productId) {
   return state.favourites.some((id) => Number(id) === Number(productId));
+}
+
+function syncDetailFavourite(productId) {
+  const button = byId('detail-favourite');
+  if (!button) return;
+  const active = isFavourite(productId);
+  button.setAttribute('aria-pressed', String(active));
+  const icon = button.querySelector('[data-detail-favourite-icon]');
+  if (icon) icon.textContent = active ? '♥' : '♡';
+  const en = button.querySelector('.bi-en');
+  const ar = button.querySelector('.bi-ar');
+  if (en) en.textContent = active ? 'Saved' : 'Favourite';
+  if (ar) ar.textContent = active ? 'في المفضلة' : 'المفضلة';
+  button.setAttribute('aria-label', active
+    ? 'Remove from favourites • إزالة من المفضلة'
+    : 'Add to favourites • أضف للمفضلة');
 }
 
 function persistLocalState() {
@@ -990,13 +1008,7 @@ async function openProductDetail(productId) {
 
     const dialog = byId('detail-dialog');
     dialog.dataset.id = String(product.id);
-    const favourite = byId('detail-favourite');
-    const active = isFavourite(product.id);
-    favourite.setAttribute('aria-pressed', String(active));
-    favourite.textContent = active ? '♥' : '♡';
-    favourite.setAttribute('aria-label', active
-      ? 'Remove from favourites • إزالة من المفضلة'
-      : 'Add to favourites • أضف للمفضلة');
+    syncDetailFavourite(product.id);
     dialog.showModal();
   } catch (error) {
     showToast(`Detail request failed: ${error.message}`, 'error', `تعذّر تحميل التفاصيل: ${error.message}`);
@@ -1161,14 +1173,9 @@ function setupDialogs() {
   });
 
   byId('detail-favourite').addEventListener('click', () => {
-    toggleFavourite(Number(byId('detail-dialog').dataset.id));
-    const active = isFavourite(Number(byId('detail-dialog').dataset.id));
-    const button = byId('detail-favourite');
-    button.setAttribute('aria-pressed', String(active));
-    button.textContent = active ? '♥' : '♡';
-    button.setAttribute('aria-label', active
-      ? 'Remove from favourites • إزالة من المفضلة'
-      : 'Add to favourites • أضف للمفضلة');
+    const productId = Number(byId('detail-dialog').dataset.id);
+    toggleFavourite(productId);
+    syncDetailFavourite(productId);
   });
 
   byId('confirm-cancel').addEventListener('click', () => byId('confirm-dialog').close());

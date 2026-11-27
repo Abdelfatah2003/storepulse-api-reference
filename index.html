@@ -9,8 +9,8 @@
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Cpath d='M18 32h28M32 18v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=27">
-  <script src="script.js?v=22" defer></script>
+  <link rel="stylesheet" href="style.css?v=28">
+  <script src="script.js?v=23" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -283,19 +283,48 @@
   </dialog>
 
   <!-- PDF 1.6: <dialog> for product detail and for delete confirmation. -->
-  <dialog class="app-dialog" id="detail-dialog" aria-labelledby="detail-title">
-    <div class="dialog-head">
-      <h2 id="detail-title"><span class="bi-en" lang="en">Product details</span><span class="bi-ar" lang="ar" dir="rtl">تفاصيل المنتج</span></h2>
-      <button class="btn btn-icon" type="button" id="detail-close" aria-label="Close details • إغلاق التفاصيل">✕</button>
-    </div>
-    <img class="detail-image" id="detail-image" src="" alt="" width="320" height="320">
-    <p class="detail-category" id="detail-category"></p>
-    <p class="detail-price" id="detail-price"></p>
-    <p class="detail-rating" id="detail-rating"></p>
-    <p class="detail-description" id="detail-description"></p>
-    <div class="dialog-actions">
-      <button class="btn btn-outline" id="detail-favourite" type="button" aria-pressed="false" aria-label="Add to favourites • أضف للمفضلة">♡</button>
-      <button class="btn btn-primary" id="detail-cart" type="button"><span class="bi-en" lang="en">Add to cart</span><span class="bi-ar" lang="ar" dir="rtl">أضف للسلة</span></button>
+  <dialog class="app-dialog detail-dialog" id="detail-dialog" aria-labelledby="detail-title">
+    <div class="detail-layout">
+      <div class="detail-media">
+        <img class="detail-image" id="detail-image" src="" alt="" width="320" height="320">
+        <span class="detail-category" id="detail-category"></span>
+      </div>
+      <div class="detail-info">
+        <div class="dialog-head detail-head">
+          <div>
+            <p class="detail-eyebrow"><span class="bi-en" lang="en">Product spotlight</span><span class="bi-ar" lang="ar" dir="rtl">منتج مميز</span></p>
+            <h2 id="detail-title"><span class="bi-en" lang="en">Product details</span><span class="bi-ar" lang="ar" dir="rtl">تفاصيل المنتج</span></h2>
+          </div>
+          <button class="btn btn-icon" type="button" id="detail-close" aria-label="Close details • إغلاق التفاصيل">✕</button>
+        </div>
+
+        <div class="detail-meta" role="group" aria-label="Product facts • معلومات المنتج">
+          <p class="detail-meta-item">
+            <span class="detail-meta-label"><span class="bi-en" lang="en">Price</span><span class="bi-ar" lang="ar" dir="rtl">السعر</span></span>
+            <span class="detail-price" id="detail-price"></span>
+          </p>
+          <p class="detail-meta-item">
+            <span class="detail-meta-label"><span class="bi-en" lang="en">Rating</span><span class="bi-ar" lang="ar" dir="rtl">التقييم</span></span>
+            <span class="detail-rating" id="detail-rating"></span>
+          </p>
+        </div>
+
+        <div class="detail-copy">
+          <p class="detail-section-label"><span class="bi-en" lang="en">About this product</span><span class="bi-ar" lang="ar" dir="rtl">عن هذا المنتج</span></p>
+          <p class="detail-description" id="detail-description"></p>
+        </div>
+
+        <div class="dialog-actions detail-actions">
+          <button class="btn btn-outline detail-favourite" id="detail-favourite" type="button" aria-pressed="false" aria-label="Add to favourites • أضف للمفضلة">
+            <span class="detail-favourite-icon" data-detail-favourite-icon aria-hidden="true">♡</span>
+            <span class="bi-en" lang="en">Favourite</span><span class="bi-ar" lang="ar" dir="rtl">المفضلة</span>
+          </button>
+          <button class="btn btn-primary detail-cart" id="detail-cart" type="button">
+            <span aria-hidden="true">🛒</span>
+            <span class="bi-en" lang="en">Add to cart</span><span class="bi-ar" lang="ar" dir="rtl">أضف للسلة</span>
+          </button>
+        </div>
+      </div>
     </div>
   </dialog>
 

@@ -94,6 +94,8 @@
   --size-hero-art: 180px;
   --size-overlay-close: 48px;
   --size-space-dialog: 720px;
+  --size-detail-dialog: 880px;
+  --size-detail-media: 320px;
   /* Cart and account use a compact dialog, so no sidebar sizes are needed. */
   --size-image: 100%;
 
@@ -1424,25 +1426,144 @@ textarea {
   margin-block-end: var(--space-4);
 }
 
-.detail-image {
-  width: 100%;
-  max-height: 280px;
-  object-fit: contain;
-  background: var(--bg-subtle);
-  border-radius: var(--radius-md);
-  margin-block-end: var(--space-4);
+.detail-dialog {
+  width: min(100% - 2 * var(--space-4), var(--size-detail-dialog));
+  max-height: min(92vh, 760px);
+  padding: 0;
 }
 
-.detail-category,
-.detail-price,
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  min-height: min(72vh, 520px);
+}
+
+.detail-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: var(--size-detail-media);
+  padding: var(--space-8) var(--space-6);
+  background: linear-gradient(135deg, var(--bg-subtle), var(--bg-accent));
+  overflow: hidden;
+}
+
+.detail-image {
+  width: 100%;
+  height: 100%;
+  max-height: var(--size-detail-media);
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  animation: detail-image-in var(--duration-normal) var(--ease-standard) both;
+}
+
+.detail-category {
+  position: absolute;
+  inset-block-start: var(--space-4);
+  inset-inline-start: var(--space-4);
+  max-width: calc(100% - 2 * var(--space-4));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-6);
+}
+
+.detail-head {
+  align-items: flex-start;
+  margin-block-end: 0;
+}
+
+.detail-eyebrow {
+  margin-block-end: var(--space-1);
+  color: var(--color-primary-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.detail-head h2 {
+  font-size: 1.4rem;
+  line-height: var(--line-tight);
+  overflow-wrap: anywhere;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.detail-meta-item {
+  flex: 1 1 180px;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.detail-meta-label,
+.detail-section-label {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.detail-price {
+  color: var(--color-primary-text);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
 .detail-rating {
   color: var(--text-secondary);
-  margin-block-end: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.detail-copy {
+  display: grid;
+  gap: var(--space-2);
 }
 
 .detail-description {
-  color: var(--text-muted);
+  margin: 0;
+  color: var(--text-secondary);
   line-height: var(--line-base);
+  overflow-wrap: anywhere;
+}
+
+.detail-actions {
+  justify-content: flex-start;
+  margin-block-start: auto;
+}
+
+.detail-favourite .detail-favourite-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.detail-favourite[aria-pressed="true"] .detail-favourite-icon {
+  color: var(--color-danger-text);
+}
+
+@keyframes detail-image-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .dialog-actions {
@@ -1643,6 +1764,29 @@ textarea {
   .cart-item {
     grid-template-columns: 1fr auto;
   }
+
+  /* The detail dialog becomes a stacked story without sideways pressure. */
+  .detail-dialog {
+    max-height: min(92vh, 680px);
+  }
+
+  .detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .detail-media {
+    min-height: 220px;
+    padding: var(--space-5);
+  }
+
+  .detail-image {
+    max-height: 220px;
+  }
+
+  .detail-info {
+    padding: var(--space-5);
+  }
 }
 
 /* Phones turn the table into labelled cards: no sideways scroll. */
@@ -1798,6 +1942,10 @@ textarea {
     padding: 0;
   }
 
+  .detail-actions .btn {
+    flex: 1 1 100%;
+  }
+
 }
 
 @media (max-width: 360px) {
@@ -1807,6 +1955,15 @@ textarea {
 
   .section-heading .btn {
     width: 100%;
+  }
+
+  .detail-media,
+  .detail-info {
+    padding: var(--space-4);
+  }
+
+  .detail-head h2 {
+    font-size: 1.2rem;
   }
 }
 
