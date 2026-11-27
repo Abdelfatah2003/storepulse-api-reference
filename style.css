@@ -1765,3 +1765,18 @@ body.sidebar-collapsed .side-rail-content {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   15. Language-change motion
+   -------------------------------------------------------------------------- */
+.bi-en,
+.bi-ar,
+#lang-button-label {
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+html.lang-shifting .bi-en,
+html.lang-shifting .bi-ar,
+html.lang-shifting #lang-button-label {
+  opacity: 0;
+}

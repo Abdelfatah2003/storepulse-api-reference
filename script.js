@@ -85,7 +85,7 @@ const state = {
   confirmAction: null,
   toastTimer: null,
   debounceTimer: null,
-  searchTimer: null
+  searchTimer: null, langFadeTimer: null
 };
 
 /* --------------------------------------------------------------------------
@@ -695,11 +695,11 @@ function setupTheme() {
   });
 }
 
-function applyLang(mode) {
-  const safe = LANGS.includes(mode) ? mode : 'ar';
-  document.documentElement.setAttribute('data-lang', safe);
-  document.documentElement.setAttribute('lang', safe === 'ar' ? 'ar' : 'en');
-  document.documentElement.setAttribute('dir', safe === 'ar' ? 'rtl' : 'ltr');
+function applyLang(mode, animate = false) {
+  const safe = LANGS.includes(mode) ? mode : 'ar'; const root = document.documentElement;
+  root.classList.toggle('lang-shifting', animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches); void root.offsetWidth;
+  window.clearTimeout(state.langFadeTimer); state.langFadeTimer = root.classList.contains('lang-shifting') ? window.setTimeout(() => root.classList.remove('lang-shifting'), 150) : null;
+  root.setAttribute('data-lang', safe); root.setAttribute('lang', safe === 'ar' ? 'ar' : 'en'); root.setAttribute('dir', safe === 'ar' ? 'rtl' : 'ltr');
   byId('lang-button-label').textContent = LANG_LABELS[safe];
   byId('lang-cycle').setAttribute('aria-label', `Change language • ${LANG_LABELS[safe]} (${LANG_NAMES[safe]})`);
   return safe;
@@ -712,7 +712,7 @@ function setupLanguage() {
   byId('lang-cycle').addEventListener('click', () => {
     const current = document.documentElement.getAttribute('data-lang');
     const next = LANGS[(LANGS.indexOf(current) + 1) % LANGS.length];
-    writeJson(localStorage, LOCAL_KEYS.language, applyLang(next));
+    writeJson(localStorage, LOCAL_KEYS.language, applyLang(next, true));
   });
 }
 
