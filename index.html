@@ -9,8 +9,8 @@
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Cpath d='M18 32h28M32 18v28' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=25">
-  <script src="script.js?v=20" defer></script>
+  <link rel="stylesheet" href="style.css?v=27">
+  <script src="script.js?v=22" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -266,15 +266,15 @@
 
         <section class="side-panel" id="account-panel" aria-labelledby="account-title">
           <h3 id="account-title"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></h3>
-          <p class="account-status" id="account-status"><span class="bi-en" lang="en">Not signed in</span><span class="bi-ar" lang="ar" dir="rtl">غير مسجل الدخول</span></p>
+          <p class="account-status" id="account-status" aria-live="polite"><span class="bi-en" lang="en">Not signed in</span><span class="bi-ar" lang="ar" dir="rtl">غير مسجل الدخول</span></p>
           <form class="login-form" id="login-form">
             <label for="login-username"><span class="bi-en" lang="en">Username</span><span class="bi-ar" lang="ar" dir="rtl">اسم المستخدم</span></label>
             <input type="text" id="login-username" required autocomplete="username">
             <label for="login-password"><span class="bi-en" lang="en">Password</span><span class="bi-ar" lang="ar" dir="rtl">كلمة المرور</span></label>
             <input type="password" id="login-password" required autocomplete="current-password">
-            <button class="btn btn-primary" id="login-submit" type="submit"><span class="bi-en" lang="en">Sign in</span><span class="bi-ar" lang="ar" dir="rtl">دخول</span></button>
+            <button class="btn btn-primary login-submit" id="login-submit" type="submit"><span class="bi-en" lang="en">Sign in</span><span class="bi-ar" lang="ar" dir="rtl">تسجيل الدخول</span></button>
           </form>
-          <button class="btn btn-outline" id="logout-button" type="button" hidden><span class="bi-en" lang="en">Sign out</span><span class="bi-ar" lang="ar" dir="rtl">خروج</span></button>
+          <button class="btn btn-outline logout-button" id="logout-button" type="button" hidden><span class="bi-en" lang="en">Sign out</span><span class="bi-ar" lang="ar" dir="rtl">تسجيل الخروج</span></button>
           <p class="privacy-note"><span class="bi-en" lang="en">The password is sent to the API but never stored in the browser.</span><span class="bi-ar" lang="ar" dir="rtl">تُرسل كلمة المرور إلى الـ API ولا تُخزَّن في المتصفح أبدًا.</span></p>
           <p class="privacy-note"><span class="bi-en" lang="en">Public FakeStoreAPI demo user (not a secret): <code>mor_2314</code> / <code>83r5^_</code></span><span class="bi-ar" lang="ar" dir="rtl">حساب تجريبي عام في FakeStoreAPI (ليس سرياً): <code>mor_2314</code> / <code>83r5^_</code></span></p>
         </section>

@@ -155,14 +155,55 @@ function persistSessionState() {
   writeJson(sessionStorage, SESSION_KEYS.page, state.page);
 }
 
-function showToast(message) {
-  const toast = byId('toast');
+function hideToast() {
   window.clearTimeout(state.toastTimer);
-  toast.textContent = message;
+  const toast = byId('toast');
+  toast.hidden = true;
+  if (toast.parentElement !== document.body) document.body.append(toast);
+}
+
+function showToast(message, tone = 'info', arabicMessage = '') {
+  const toast = byId('toast');
+  const safeTone = ['success', 'info', 'error'].includes(tone) ? tone : 'info';
+  window.clearTimeout(state.toastTimer);
+  toast.className = `toast toast-${safeTone}`;
+  toast.replaceChildren();
+
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = safeTone === 'success' ? '✓' : safeTone === 'error' ? '!' : 'i';
+
+  const text = document.createElement('span');
+  text.className = 'toast-text';
+  if (arabicMessage) {
+    const en = document.createElement('span');
+    en.className = 'bi-en';
+    en.lang = 'en';
+    en.textContent = message;
+    const ar = document.createElement('span');
+    ar.className = 'bi-ar';
+    ar.lang = 'ar';
+    ar.dir = 'rtl';
+    ar.textContent = arabicMessage;
+    text.append(en, ar);
+  } else {
+    text.textContent = message;
+  }
+
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'toast-close';
+  close.setAttribute('aria-label', 'Dismiss message • إخفاء الرسالة');
+  close.textContent = '×';
+  close.addEventListener('click', hideToast);
+
+  toast.append(icon, text, close);
+  /* Native dialogs use the top layer, so feedback shown from a dialog must live inside it. */
+  const host = document.querySelector('dialog[open]') || document.body;
+  if (toast.parentElement !== host) host.append(toast);
   toast.hidden = false;
-  state.toastTimer = window.setTimeout(() => {
-    toast.hidden = true;
-  }, TOAST_DURATION_MS);
+  state.toastTimer = window.setTimeout(hideToast, TOAST_DURATION_MS);
 }
 
 /* --------------------------------------------------------------------------
@@ -641,9 +682,14 @@ function renderCart() {
 
 function renderAccount() {
   const signedIn = Boolean(state.token);
-  byId('account-status').textContent = signedIn
-    ? `Signed in as ${state.username || 'user'} • token in sessionStorage`
+  const username = state.username || 'user';
+  const status = byId('account-status');
+  status.querySelector('.bi-en').textContent = signedIn
+    ? `Signed in as ${username} • token in sessionStorage`
     : 'Not signed in';
+  status.querySelector('.bi-ar').textContent = signedIn
+    ? `تم تسجيل الدخول باسم ${username} • الرمز في sessionStorage`
+    : 'غير مسجل الدخول';
   byId('login-form').hidden = signedIn;
   byId('logout-button').hidden = !signedIn;
 }
@@ -928,7 +974,7 @@ async function openProductDetail(productId) {
   try {
     const product = await requestJson(`${API_BASE_URL}/products/${productId}`);
     if (!product || Array.isArray(product)) {
-      showToast('The API returned no product for this id.');
+      showToast('The API returned no product for this id.', 'info', 'الـ API لم يُرجع منتجاً لهذا المعرّف.');
       return;
     }
 
@@ -953,7 +999,7 @@ async function openProductDetail(productId) {
       : 'Add to favourites • أضف للمفضلة');
     dialog.showModal();
   } catch (error) {
-    showToast(`Detail request failed: ${error.message}`);
+    showToast(`Detail request failed: ${error.message}`, 'error', `تعذّر تحميل التفاصيل: ${error.message}`);
   }
 }
 
@@ -966,7 +1012,7 @@ function addToCart(product) {
   }
   persistLocalState();
   render();
-  showToast(`Added to cart: ${product.title}`);
+  showToast(`Added “${product.title}” to your cart`, 'success', `تمت إضافة «${product.title}» إلى سلتك`);
 }
 
 function changeCartQuantity(productId, delta) {
@@ -1005,7 +1051,7 @@ function setupCart() {
 
 async function checkout() {
   if (state.cart.length === 0) {
-    showToast('Your cart is empty.');
+    showToast('Your cart is empty.', 'info', 'سلتك فارغة.');
     return;
   }
 
@@ -1021,24 +1067,35 @@ async function checkout() {
     const order = await requestJson(`${API_BASE_URL}/carts`, {
       method: 'POST', headers, body: JSON.stringify(body)
     });
-    showToast(`Order ${order?.id ?? 'created'} sent to the API.`);
+    const orderId = Number(order?.id);
+    const suffix = Number.isFinite(orderId) ? ` #${orderId}` : '';
+    showToast(`Order${suffix} sent successfully`, 'success', `تم إرسال الطلب${suffix ? ` رقم ${orderId}` : ''} بنجاح`);
     state.cart = [];
     persistLocalState();
     render();
   } catch (error) {
-    showToast(`Checkout failed: ${error.message}`);
+    showToast(`Checkout failed: ${error.message}`, 'error', `تعذّر إتمام الطلب: ${error.message}`);
   }
 }
 
 /* --------------------------------------------------------------------------
    11. Login, token and product writes.
    -------------------------------------------------------------------------- */
+function setLoginPending(pending) {
+  const submit = byId('login-submit');
+  submit.disabled = pending;
+  submit.setAttribute('aria-busy', String(pending));
+  submit.querySelector('.bi-en').textContent = pending ? 'Signing in…' : 'Sign in';
+  submit.querySelector('.bi-ar').textContent = pending ? 'جارٍ الدخول…' : 'تسجيل الدخول';
+}
+
 async function handleLogin(event) {
   event.preventDefault();
   const usernameInput = byId('login-username');
   const passwordInput = byId('login-password');
   const body = { username: usernameInput.value, password: passwordInput.value };
   passwordInput.value = '';
+  setLoginPending(true);
 
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -1066,9 +1123,11 @@ async function handleLogin(event) {
     state.username = body.username;
     persistSessionState();
     render();
-    showToast('Signed in. Token kept in sessionStorage only.');
+    showToast('Signed in. Token kept in sessionStorage only.', 'success', 'تم تسجيل الدخول. الرمز محفوظ في sessionStorage فقط.');
   } catch (error) {
-    showToast(error.message);
+    showToast(error.message, 'error', error.message);
+  } finally {
+    setLoginPending(false);
   }
 }
 
@@ -1078,9 +1137,11 @@ function setupAccount() {
   byId('logout-button').addEventListener('click', () => {
     state.token = '';
     state.username = '';
+    byId('login-username').value = '';
+    byId('login-password').value = '';
     persistSessionState();
     render();
-    showToast('Signed out; token removed.');
+    showToast('Signed out; token removed.', 'info', 'تم تسجيل الخروج؛ حُذف الرمز.');
   });
 }
 
@@ -1173,7 +1234,7 @@ async function handleProductSubmit(event) {
   event.preventDefault();
   const payload = buildProductPayload();
   if (!payload.title || !payload.image || !payload.category || !Number.isFinite(payload.price)) {
-    showToast('Please fill the title, price, image and category.');
+    showToast('Please fill the title, price, image and category.', 'error', 'يرجى إدخال العنوان والسعر والصورة والتصنيف.');
     return;
   }
 
@@ -1226,9 +1287,9 @@ async function handleProductSubmit(event) {
     byId('product-form-dialog').close();
     /* Category filtering happens in the request URL, so re-request that category. */
     await reloadProducts();
-    showToast(`${editingId ? 'Updated' : 'Created'} product ${id} — ظاهر في هذه الجلسة لأن FakeStoreAPI يحاكي الحفظ فقط.`);
+    showToast(`${editingId ? 'Updated' : 'Created'} product ${id} — visible in this session only.`, 'success', `${editingId ? 'تم تعديل' : 'تم إنشاء'} المنتج ${id} — ظاهر في هذه الجلسة فقط لأن FakeStoreAPI يحاكي الحفظ.`);
   } catch (error) {
-    showToast(`Save failed: ${error.message}`);
+    showToast(`Save failed: ${error.message}`, 'error', `تعذّر الحفظ: ${error.message}`);
   }
 }
 
@@ -1247,9 +1308,9 @@ function askBeforeDelete(product) {
       persistLocalState();
       applyLocalFilters();
       render();
-      showToast(`Delete accepted for product ${removed?.id ?? id} — removed in this session.`);
+      showToast(`Delete accepted for product ${removed?.id ?? id} — removed in this session.`, 'success', `تم حذف المنتج ${removed?.id ?? id} — يختفي في هذه الجلسة فقط.`);
     } catch (error) {
-      showToast(`Delete failed: ${error.message}`);
+      showToast(`Delete failed: ${error.message}`, 'error', `تعذّر الحذف: ${error.message}`);
     }
   });
 }
@@ -1290,6 +1351,9 @@ function setupScrollProgress() {
    13. Start-up — wire events, then fetch data.
    -------------------------------------------------------------------------- */
 function setupEvents() {
+  document.addEventListener('close', (event) => {
+    if (byId('toast').parentElement === event.target) hideToast();
+  }, true);
   byId('product-grid').addEventListener('click', handleProductAction);
   byId('product-table-body').addEventListener('click', handleProductAction);
   setupFilters();
