@@ -1930,3 +1930,23 @@ html[lang="ar"] .hero-kicker {
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
+/* --------------------------------------------------------------------------
+   18. Scrollbars stay functional but visually hidden
+   -------------------------------------------------------------------------- */
+html,
+body,
+.app-dialog,
+.space-dialog {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.app-dialog::-webkit-scrollbar,
+.space-dialog::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
