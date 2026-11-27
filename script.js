@@ -825,15 +825,9 @@ function setupMenu() {
 
 function setSidebarOpen(open) {
   document.body.classList.toggle('sidebar-collapsed', !open);
-  const button = byId('sidebar-toggle');
-  button.setAttribute('aria-expanded', String(open));
-  /* The expanded name comes from the visible bilingual text; the collapsed
-     icon is decorative, so it needs an explicit label in both languages. */
-  if (open) {
-    button.removeAttribute('aria-label');
-  } else {
-    button.setAttribute('aria-label', 'Open sidebar • فتح الشريط');
-  }
+  /* The visible bilingual label already says "Close" or "Open", so CSS keeps
+     the icon decorative and the accessible name matches what users see. */
+  byId('sidebar-toggle').setAttribute('aria-expanded', String(open));
 }
 
 function setupSidebar() {

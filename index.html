@@ -8,8 +8,8 @@
 
   <!-- PDF 1.1: title, charset, viewport, CSS in head, and script.js with defer. -->
   <title>StorePulse • Online Store</title>
-  <link rel="stylesheet" href="style.css?v=8">
-  <script src="script.js?v=7" defer></script>
+  <link rel="stylesheet" href="style.css?v=9">
+  <script src="script.js?v=8" defer></script>
 </head>
 <body>
   <!-- PDF 1.5: the skip link is the first focusable element. -->
@@ -45,6 +45,15 @@
         <a href="#catalogue"><span class="bi-en" lang="en">Shop</span><span class="bi-ar" lang="ar" dir="rtl">المتجر</span></a>
         <a href="#cart-panel"><span class="bi-en" lang="en">Cart</span><span class="bi-ar" lang="ar" dir="rtl">السلة</span> <span class="nav-count" id="cart-count">0</span></a>
         <a href="#account-panel"><span class="bi-en" lang="en">Account</span><span class="bi-ar" lang="ar" dir="rtl">الحساب</span></a>
+
+        <!-- The sidebar toggle lives in the top toolbar so it stays reachable. -->
+        <button class="btn btn-outline sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="side-rail-content" aria-expanded="true">
+          <span class="sidebar-toggle-icon" aria-hidden="true"></span>
+          <span class="sidebar-toggle-text">
+            <span class="bi-en" lang="en"><span class="label-open">Close sidebar</span><span class="label-closed">Open sidebar</span></span>
+            <span class="bi-ar" lang="ar" dir="rtl"><span class="label-open">إغلاق الشريط</span><span class="label-closed">فتح الشريط</span></span>
+          </span>
+        </button>
 
         <!-- PDF 3.5: three themes, cycled by one repeatedly-pressable button. -->
         <button class="btn btn-outline theme-cycle" id="theme-cycle" type="button" aria-label="Change colour theme • ☀️ Light / فاتح">
@@ -205,14 +214,8 @@
     <!-- PDF M8/M9: cart, login and storage-backed controls in a sidebar rail. -->
     <aside class="side-layout" id="side-rail" aria-labelledby="sidebar-title">
       <div class="side-rail-heading">
-        <div class="side-rail-label">
-          <p class="eyebrow"><span class="bi-en" lang="en">Your space</span><span class="bi-ar" lang="ar" dir="rtl">مساحتك</span></p>
-          <h2 id="sidebar-title"><span class="bi-en" lang="en">Account &amp; cart</span><span class="bi-ar" lang="ar" dir="rtl">الحساب والسلة</span></h2>
-        </div>
-        <button class="btn btn-outline sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="side-rail-content" aria-expanded="true">
-          <span class="sidebar-toggle-icon" aria-hidden="true"></span>
-          <span class="sidebar-toggle-text"><span class="bi-en" lang="en">Close sidebar</span><span class="bi-ar" lang="ar" dir="rtl">إغلاق الشريط</span></span>
-        </button>
+        <p class="eyebrow"><span class="bi-en" lang="en">Your space</span><span class="bi-ar" lang="ar" dir="rtl">مساحتك</span></p>
+        <h2 id="sidebar-title"><span class="bi-en" lang="en">Account &amp; cart</span><span class="bi-ar" lang="ar" dir="rtl">الحساب والسلة</span></h2>
       </div>
 
       <div class="side-rail-content" id="side-rail-content">

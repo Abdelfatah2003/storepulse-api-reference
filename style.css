@@ -425,10 +425,41 @@ body.sidebar-collapsed .page-main {
 }
 
 .theme-cycle,
-.lang-cycle {
+.lang-cycle,
+.sidebar-toggle {
   min-height: var(--size-touch);
   white-space: nowrap;
   font-size: 0.8rem;
+}
+
+/* Toolbar toggle: the icon shows the state, the label shows the next action. */
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
+}
+
+.sidebar-toggle[aria-expanded="false"] {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.sidebar-toggle-icon::before {
+  content: '×';
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.sidebar-toggle[aria-expanded="false"] .sidebar-toggle-icon::before {
+  content: '☰';
+}
+
+.sidebar-toggle[aria-expanded="true"] .label-closed,
+.sidebar-toggle[aria-expanded="false"] .label-open {
+  display: none;
 }
 
 .primary-nav > a {
@@ -1227,21 +1258,19 @@ textarea {
   gap: var(--space-4);
   max-height: calc(100vh - var(--size-header) - var(--space-8));
   overflow-y: auto;
-  padding-block-end: var(--space-2);
   min-width: 0;
   scrollbar-width: thin;
+  /* A soft frame separates the rail from the catalogue without new colours. */
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-inline-start: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
 }
 
 .side-rail-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding-inline: var(--space-1);
-}
-
-.side-rail-label {
-  min-width: 0;
+  padding-block-end: var(--space-3);
+  border-block-end: 1px solid var(--border-subtle);
 }
 
 .side-rail-heading .eyebrow {
@@ -1253,51 +1282,26 @@ textarea {
   margin-block-end: 0;
 }
 
-.sidebar-toggle {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: var(--size-touch);
-  padding-inline: var(--space-3);
-}
-
-.sidebar-toggle-icon::before {
-  content: '×';
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-#sidebar-toggle[aria-expanded="false"] .sidebar-toggle-icon::before {
-  content: '☰';
-}
-
 .side-rail-content {
   display: grid;
   gap: var(--space-4);
 }
 
 body.sidebar-collapsed .side-layout {
+  inline-size: var(--size-touch);
+  justify-self: center;
   justify-items: center;
   overflow-y: hidden;
-  padding-block-end: 0;
-}
-
-body.sidebar-collapsed .side-rail-heading {
-  justify-content: center;
-  padding-inline: 0;
-}
-
-body.sidebar-collapsed .side-rail-label,
-body.sidebar-collapsed .side-rail-content,
-body.sidebar-collapsed .sidebar-toggle-text {
-  display: none;
-}
-
-body.sidebar-collapsed .sidebar-toggle {
-  width: var(--size-touch);
+  background: transparent;
+  border-color: transparent;
+  border-inline-start-color: var(--color-primary);
+  border-radius: 0;
   padding: 0;
+}
+
+body.sidebar-collapsed .side-rail-heading,
+body.sidebar-collapsed .side-rail-content {
+  display: none;
 }
 
 #cart-panel,
